@@ -101,10 +101,14 @@ jQuery(document).ready(function ($) {
             $(newMessage).appendTo(containers.QUEUE).show('drop', options, 700);
         },
         addButtons: function (buttons, options) {
+            let self = this;
             buttons.forEach(function (button) {
                 let newMessage = document.createElement('div');
                 $(newMessage).addClass('button');
                 $(newMessage).append(button['text']);
+                newMessage.addEventListener('click', function () {
+                    self.addMessage(button['text'], 'user', 'text');
+                });
                 $(newMessage).appendTo(containers.QUEUE).show('drop', options, 700);
             })
         },
@@ -177,7 +181,7 @@ jQuery(document).ready(function ($) {
             $(leftButton).on('click', function () {
                 let currentScroll = $(carousel).scrollLeft();
                 console.log(currentScroll);
-                $('.card_carousel').animate({scrollLeft: currentScroll - 211}, 700);
+                $('.card_carousel').animate({scrollLeft: currentScroll - 222}, 700);
             });
             $(leftButton).append('<i class="fas fa-chevron-left"></i>');
             let rightButton = document.createElement('div');
@@ -185,7 +189,7 @@ jQuery(document).ready(function ($) {
             $(rightButton).on('click', function () {
                 let currentScroll = $(carousel).scrollLeft();
                 console.log(currentScroll);
-                $('.card_carousel').animate({scrollLeft: currentScroll + 200}, 700);
+                $('.card_carousel').animate({scrollLeft: currentScroll + 222}, 700);
             });
             $(rightButton).append('<i class="fas fa-chevron-right"></i>');
             let carouselWrap = document.createElement('div');
