@@ -104,7 +104,7 @@ body {
     height: 343px;
     width: 100%;
     background: white;
-    padding: 0 14px 0 48px;
+    padding: 0 14px 0 0;
     margin-bottom: 2px;
     box-sizing: border-box;
 }
@@ -114,6 +114,7 @@ body {
     flex-direction: column;
     width: 100%;
     overflow-y: scroll;
+    overflow-x: hidden;
     height: 343px;
     padding: 12px 17px 8px 0;
     box-sizing: border-box;
@@ -136,6 +137,7 @@ body {
     font-weight: 500;
     color: white;
     align-self: flex-start;
+    margin-left: 48px;
 }
 
 #gaspar_container #gaspar_body #message_queue .user_message {
@@ -162,6 +164,7 @@ body {
     cursor: pointer;
     margin-bottom: 12px;
     max-width: 200px;
+    margin-left: 48px;
 }
 
 #gaspar_container #gaspar_body #message_queue #filter {
@@ -191,6 +194,183 @@ body {
 
 
 #gaspar_container #gaspar_body  #message_queue::-webkit-scrollbar-thumb:hover {
+}
+
+#gaspar_container #gaspar_body #message_queue .carousel_holder {
+    position: relative;
+    overflow: visible;
+    padding: 0 48px;
+}
+
+#gaspar_container #gaspar_body #message_queue .card_carousel {
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+    overflow-y: visible;
+    width: 250px;
+    height: 250px;
+    min-height: 250px;
+    position: relative;
+}
+
+#gaspar_container #gaspar_body #message_queue .card_carousel::-webkit-scrollbar {
+    display: none;
+}
+
+#gaspar_container #gaspar_body #message_queue .carousel_holder .carousel_button {
+    position: absolute;
+    top: 50%;
+    z-index: 99;
+    width: 30px;
+    height: 30px;
+    box-sizing: border-box;
+    background: #ffffff;
+    box-shadow: 0 0 1px 2px rgba(0,0,0,0.3);
+    text-align: center;
+    border-radius: 100%;
+    padding: 7px 0;
+    font-size: 16px;
+    color: #929292;
+    cursor: pointer;
+}
+
+#gaspar_container #gaspar_body #message_queue .carousel_holder .carousel_button.left_carousel_button {
+    left: 7px;
+}
+
+#gaspar_container #gaspar_body #message_queue .carousel_holder .carousel_button.right_carousel_button {
+    right: -30px;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card {
+    border-radius: 7px;
+    background: #f4f4f4;
+    width: 211px;
+    min-width: 211px;
+    height: 247px;
+    display: flex;
+    flex-direction: column;
+    margin-right: 11px;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header {
+    background: url("../img/berries-bunch-colors-760281.jpg");
+    padding: 14px 15px 0;
+    box-sizing: border-box;
+    text-align: center;
+    border-radius: 7px 7px 0 0;
+    position: relative;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_header_name {
+    color: white;
+    font-family: 'Roboto', 'sans-serif';
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_header_origin {
+    color: white;
+    font-family: 'Roboto', 'sans-serif';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    margin-bottom: 4px;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_images {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_images .wine_color {
+    margin-right: 4px;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_images .wine_image {
+    margin-right: 4px;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_properties {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    bottom: -25px;
+    width: 100%;
+    left: 0;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_properties .wine_property {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 25%;
+    align-items: center;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_properties .wine_property .property_number {
+    color: white;
+    font-family: 'Roboto', 'sans-serif';
+    font-weight: 500;
+    font-size: 12px;
+    padding: 5px 0;
+    box-sizing: border-box;
+    line-height: 14px;
+    width: 30px;
+    height: 30px;
+    border: 3px solid white;
+    background: #99192f;
+    border-radius: 100%;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_properties .wine_property .property_name {
+    color: #222222;
+    text-transform: capitalize;
+    font-family: 'Roboto', 'sans-serif';
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 11px;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description {
+    padding: 0 8px 6px;
+    margin-top: 35px;
+    overflow-y: scroll;
+    box-sizing: border-box;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description::-webkit-scrollbar {
+    width: 3px;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description::-webkit-scrollbar-thumb {
+    background: #d9d9d9;
+    border-radius: 4px;
+    width: 10px;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description .wine_description_name {
+    font-family: 'Roboto', 'sans-serif';
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+    color: #222222;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description .wine_description_text {
+    font-family: 'Roboto', 'sans-serif';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    color: #222222;
 }
 
 #gaspar_container #gaspar_bottom {
@@ -245,7 +425,7 @@ body {
 }
 
 #gaspar_container #gaspar_bottom #gaspar_input:focus {
-   outline: none;
+    outline: none;
 }
 
 #gaspar_container #gaspar_bottom #gaspar_input::-webkit-scrollbar {
@@ -262,11 +442,22 @@ body {
     width: 10px;
 }
 
-#gaspar_container #gaspar_bottom::after {
-    content: '';
+/*#gaspar_container #gaspar_bottom::after {*/
+/*content: '';*/
+/*background: url("../img/chatbot body_tail.png");*/
+/*position: absolute;*/
+/*!*border-top: 34px solid white;*!*/
+/*!*border-left: 34px solid transparent;*!*/
+/*height: 34px;*/
+/*width: 34px;*/
+/*right: 0;*/
+/*bottom: -34px;*/
+/*}*/
+
+#gaspar_container #gaspar_bottom .gaaspar_tail {
+    width: 50px;
+    height: 34px;
     position: absolute;
-    border-top: 34px solid white;
-    border-left: 34px solid transparent;
     right: 0;
     bottom: -34px;
 }

@@ -32,7 +32,7 @@ jQuery(document).ready(function ($) {
             this.addMessage('How can I help you today?', 'gaspar', 'text');
             this.addMessage([{text: 'Find wine for my meal'},{text: 'Find a bottle of wine'}], 'gaspar', 'button');
             preview.show('drop', {direction: 'down'}, 600);
-            // self.getWineFromApi();
+            self.getWineFromApi();
             this.addMessage([{name: 'Bodega Colome,Estate'},{name: 'Bodega Colome,Estate'},{name: 'Bodega Colome,Estate'}], 'gaspar', 'carousel');
         },
         clickButton: function () {
@@ -205,8 +205,7 @@ jQuery(document).ready(function ($) {
         getWineFromApi() {
             let self = this;
             let myInit = {
-                method: 'GET',
-                mode: 'no-cors'
+                method: 'GET'
             };
             let request = new Request('http://ec2-52-30-218-137.eu-west-1.compute.amazonaws.com/top_wine/places/1333/filter?max_price=75', myInit);
             fetch(request).then(function (response) {
