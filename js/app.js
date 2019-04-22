@@ -28,12 +28,13 @@ jQuery(document).ready(function ($) {
             this.send.on('click', function () {
                 self.inputSended();
             });
-            this.addMessage('Hello! My name is Gaspar, I am your personal sommelier.', 'gaspar', 'text');
+            this.addMessage('Hello! My name is Gaspar, I will be your sommelier today.', 'gaspar', 'text');
             this.addMessage('How can I help you today?', 'gaspar', 'text');
-            this.addMessage([{text: 'Find wine for my meal'},{text: 'Find a bottle of wine'}], 'gaspar', 'button');
+            this.addMessage({label: 'Find wine for my meal'}, 'gaspar', 'button');
+            this.addMessage({label: 'Find a bottle of wine'}, 'gaspar', 'button');
             preview.show('drop', {direction: 'down'}, 600);
-            self.getWineFromApi();
-            this.addMessage([{name: 'Bodega Colome,Estate'},{name: 'Bodega Colome,Estate'},{name: 'Bodega Colome,Estate'}], 'gaspar', 'carousel');
+            // self.postToAPI('Hello');
+            this.addMessage([{name: 'Bodega Colome,Estate'}, {name: 'Bodega Colome,Estate'}, {name: 'Bodega Colome,Estate'}], 'gaspar', 'carousel');
         },
         clickButton: function () {
             let self = this;
@@ -99,18 +100,19 @@ jQuery(document).ready(function ($) {
             $(newMessage).addClass('message ' + sender + '_message');
             $(newMessage).append(text);
             $(newMessage).appendTo(containers.QUEUE).show('drop', options, 700);
+            if (sender === 'user') {
+                self.postToAPI(text);
+            }
         },
-        addButtons: function (buttons, options) {
+        addButtons: function (button, options) {
             let self = this;
-            buttons.forEach(function (button) {
-                let newMessage = document.createElement('div');
-                $(newMessage).addClass('button');
-                $(newMessage).append(button['text']);
-                newMessage.addEventListener('click', function () {
-                    self.addMessage(button['text'], 'user', 'text');
-                });
-                $(newMessage).appendTo(containers.QUEUE).show('drop', options, 700);
-            })
+            let newMessage = document.createElement('div');
+            $(newMessage).addClass('button');
+            $(newMessage).append(button.label);
+            newMessage.addEventListener('click', function () {
+                self.addMessage(button.label, 'user', 'text');
+            });
+            $(newMessage).appendTo(containers.QUEUE).show('drop', options, 700);
         },
         addFilter: function () {
 
@@ -126,7 +128,7 @@ jQuery(document).ready(function ($) {
                 $(carousel).append(`<div class="wine_card">
                                         <div class="wine_card_header">
                                             <div class="wine_header_name">
-                                                `+card['name']+`
+                                                ` + card['name'] + `
                                             </div>
                                             <div class="wine_header_origin">
                                                 2016 Calchaqui Valley
@@ -202,7 +204,7 @@ jQuery(document).ready(function ($) {
         addCard: function (card) {
 
         },
-        getWineFromApi() {
+        getWineFromApi: function () {
             let self = this;
             let myInit = {
                 method: 'GET'
@@ -211,7 +213,34 @@ jQuery(document).ready(function ($) {
             fetch(request).then(function (response) {
                 return response.json();
             }).then(function (jsonResponse) {
+                console.log(jsonResponse.output);
+            });
+        },
+        postToAPI: function (value) {
+            let myInit = {
+                method: 'GET'
+            };
+            let self = this;
+            console.log('Value = ' + value);
+            // let request = new Request('http://127.0.0.1:1880/hello-param/Test');
+            let request = new Request('http://127.0.0.1:1880/watson/' + value, myInit);
+            let responseStep = '';
+            fetch(request).then(function (response) {
+                console.log(response);
+                return response.json();
+            }).then(function (jsonResponse) {
                 console.log(jsonResponse);
+                responseStep = jsonResponse.output.generic;
+                responseStep.forEach(function (step) {
+                    if (step.response_type === 'text') {
+                        self.addMessage(step.text, 'gaspar', 'text');
+                    } else if (step.response_type === 'option') {
+                        self.addMessage(step.title, 'gaspar', 'text');
+                        step.options.forEach(function (option) {
+                            self.addMessage(option, 'gaspar', 'button');
+                        });
+                    }
+                });
             });
         },
         showPreview: function () {
