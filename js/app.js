@@ -18,6 +18,7 @@ jQuery(document).ready(function ($) {
         messageQueue: 0,
         previewTimer: null,
         opened: false,
+        foodList: [],
         initialize: function () {
             let self = this;
             this.button.on('click', self.clickButton);
@@ -224,23 +225,39 @@ jQuery(document).ready(function ($) {
             console.log('Value = ' + value);
             // let request = new Request('http://127.0.0.1:1880/hello-param/Test');
             let request = new Request('http://127.0.0.1:1880/watson/' + value, myInit);
-            let responseStep = '';
             fetch(request).then(function (response) {
                 console.log(response);
                 return response.json();
             }).then(function (jsonResponse) {
                 console.log(jsonResponse);
-                responseStep = jsonResponse.output.generic;
-                responseStep.forEach(function (step) {
-                    if (step.response_type === 'text') {
-                        self.addMessage(step.text, 'gaspar', 'text');
-                    } else if (step.response_type === 'option') {
-                        self.addMessage(step.title, 'gaspar', 'text');
-                        step.options.forEach(function (option) {
-                            self.addMessage(option, 'gaspar', 'button');
-                        });
-                    }
-                });
+                if (jsonResponse.type === 'dishes') {
+                    self.foodList = []  ;
+                    jsonResponse.data.forEach(function (dish) {
+                       self.foodList.push(dish);
+                    });
+                    console.log(self.foodList.length);
+                    jsonResponse.text.forEach(function (step) {
+                        if (step.response_type === 'text') {
+                            self.addMessage(step.text, 'gaspar', 'text');
+                        } else if (step.response_type === 'option') {
+                            self.addMessage(step.title, 'gaspar', 'text');
+                            step.options.forEach(function (option) {
+                                self.addMessage(option, 'gaspar', 'button');
+                            });
+                        }
+                    });
+                } else if (jsonResponse.type === 'other') {
+                    jsonResponse.response.forEach(function (step) {
+                        if (step.response_type === 'text') {
+                            self.addMessage(step.text, 'gaspar', 'text');
+                        } else if (step.response_type === 'option') {
+                            self.addMessage(step.title, 'gaspar', 'text');
+                            step.options.forEach(function (option) {
+                                self.addMessage(option, 'gaspar', 'button');
+                            });
+                        }
+                    });
+                }
             });
         },
         showPreview: function () {
