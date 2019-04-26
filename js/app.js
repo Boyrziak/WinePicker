@@ -224,14 +224,14 @@ jQuery(document).ready(function ($) {
             let self = this;
             console.log('Value = ' + value);
             // let request = new Request('http://127.0.0.1:1880/hello-param/Test');
-            let request = new Request('http://127.0.0.1:1880/watson/' + value, myInit);
+            let request = new Request('https://0f8a8af5.ngrok.io/watson/' + value, myInit);
             fetch(request).then(function (response) {
                 console.log(response);
                 return response.json();
             }).then(function (jsonResponse) {
                 console.log(jsonResponse);
                 if (jsonResponse.type === 'dishes') {
-                    self.foodList = []  ;
+                    self.foodList = [];
                     jsonResponse.data.forEach(function (dish) {
                        self.foodList.push(dish);
                     });
