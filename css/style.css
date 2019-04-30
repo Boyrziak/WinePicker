@@ -27,6 +27,7 @@ body {
     border-radius: 15px;
     width: 240px;
     height: 90px;
+    /*overflow-y: hidden;*/
     display: none;
     text-align: center;
     flex-direction: column;
@@ -55,6 +56,7 @@ body {
     left: 12px;
     right: 12px;
     top: 35px;
+    overflow-y: hidden;
 }
 
 #gaspar_preview_container img {
