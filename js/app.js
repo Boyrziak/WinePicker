@@ -270,6 +270,7 @@ jQuery(document).ready(function ($) {
                 console.log(jsonResponse);
                 if (jsonResponse.type === 'dishes') {
                     self.foodList = jsonResponse.data;
+                    $('.filter_input_changeable').empty();
                     jsonResponse.data.forEach(function (dish) {
                         // self.foodList.push(dish);
                         $('.filter').find('.filter_options').append('<div class="filter_option">' + dish + '</div>');
@@ -279,11 +280,6 @@ jQuery(document).ready(function ($) {
                     });
                     $('#message_queue').animate({paddingBottom: '60px'}, 700);
                     $('.filter').show('drop', {direction: 'right'}, 700);
-                    $('.filter_option').on('click', function () {
-                        $('.filter').hide('drop', {direction: 'right'} , 700);
-                        self.addMessage($(this).text(), 'user', 'text');
-                        $('#message_queue').animate({paddingBottom: '8px'}, 700);
-                    });
                     console.log(self.foodList.length);
                     jsonResponse.text.forEach(function (step) {
                         if (step.response_type === 'text') {
@@ -307,6 +303,16 @@ jQuery(document).ready(function ($) {
                         filteredFood.forEach((food)=> {
                             $('.filter').find('.filter_options').append('<div class="filter_option">' + food + '</div>');
                         });
+                        $('.filter_option').on('click', function () {
+                            $('.filter').hide('drop', {direction: 'right'} , 700);
+                            self.addMessage($(this).text(), 'user', 'text');
+                            $('#message_queue').animate({paddingBottom: '8px'}, 700);
+                        });
+                    });
+                    $('.filter_option').on('click', function () {
+                        $('.filter').hide('drop', {direction: 'right'} , 700);
+                        self.addMessage($(this).text(), 'user', 'text');
+                        $('#message_queue').animate({paddingBottom: '8px'}, 700);
                     });
                 } else if (jsonResponse.type === 'other') {
                     jsonResponse.response.forEach(function (step) {
