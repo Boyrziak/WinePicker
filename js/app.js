@@ -296,7 +296,7 @@ jQuery(document).ready(function ($) {
                         }
                     });
                     $('.filter').keydown(function (e) {
-                        e.keyCode === 13 ? (e.preventDefault(), self.inputSended()) : null;
+                        e.keyCode === 13 ? (e.preventDefault(), self.inputSended($('.filter_input_changeable').text())) : null;
                     });
                 } else if (jsonResponse.type === 'other') {
                     jsonResponse.response.forEach(function (step) {
