@@ -73,7 +73,7 @@ jQuery(document).ready(function ($) {
             $('.filter').hide('drop', {direction: 'right'}, 700);
             let self = this;
             self.addMessage(inputText, 'user', 'text');
-            input.empty();
+            $(containers.INPUT).empty();
         },
         addMessage: function (value, sender, type) {
             let self = this;
