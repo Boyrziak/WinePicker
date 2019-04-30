@@ -269,7 +269,7 @@ jQuery(document).ready(function ($) {
             }).then(function (jsonResponse) {
                 console.log(jsonResponse);
                 if (jsonResponse.type === 'dishes') {
-                    self.foodList = [];
+                    self.foodList = jsonResponse.data;
                     jsonResponse.data.forEach(function (dish) {
                         // self.foodList.push(dish);
                         $('.filter').find('.filter_options').append('<div class="filter_option">' + dish + '</div>');
@@ -295,8 +295,18 @@ jQuery(document).ready(function ($) {
                             });
                         }
                     });
-                    $('.filter').keydown(function (e) {
+                    $('.filter_input_changeable').keydown(function (e) {
                         e.keyCode === 13 ? (e.preventDefault(), self.inputSended($('.filter_input_changeable').text())) : null;
+                    });
+                    $('.filter_input_changeable').on('input', ()=> {
+                        console.log('Input: ' + $('.filter_input_changeable').text());
+                        let filteredFood = self.foodList.filter(function(element){
+                            return element.includes($('.filter_input_changeable').text());
+                        });
+                        $('.filter').find('.filter_options').empty();
+                        filteredFood.forEach((food)=> {
+                            $('.filter').find('.filter_options').append('<div class="filter_option">' + food + '</div>');
+                        });
                     });
                 } else if (jsonResponse.type === 'other') {
                     jsonResponse.response.forEach(function (step) {
