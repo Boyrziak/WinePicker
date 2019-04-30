@@ -28,6 +28,7 @@ body {
     width: 240px;
     height: 90px;
     display: none;
+    text-align: center;
     flex-direction: column;
     justify-items: center;
     align-items: center;
@@ -167,8 +168,67 @@ body {
     margin-left: 48px;
 }
 
-#gaspar_container #gaspar_body #message_queue #filter {
+#gaspar_container #gaspar_body #message_queue .filter {
+    font-family: 'Roboto', 'sans-serif';
+    line-height: 20px;
+    font-size: 14px;
+    background: #f4f4f4;
+    border: 1px solid #f4f4f4;
+    border-radius: 15px 15px 0 15px;
+    font-weight: 400;
+    color: #222222;
+    align-self: flex-end;
+    width: 200px;
+    position: absolute;
+    bottom: -105px;
+    z-index: 100;
+    display: none;
+}
 
+#gaspar_container #gaspar_body #message_queue .filter .filter_input{
+    padding-top: 13px;
+    padding-bottom: 12px;
+    padding-left: 12px;
+    display: flex;
+    flex-direction: row;
+}
+
+#gaspar_container #gaspar_body #message_queue .filter .filter_input .filter_input_changeable{
+    width: 150px;
+    margin-left: 10px;
+}
+
+#gaspar_container #gaspar_body #message_queue .filter .filter_input .filter_input_changeable:focus{
+    outline: none;
+}
+
+#gaspar_container #gaspar_body #message_queue .filter .filter_options{
+    overflow-y: scroll;
+    height: 200px;
+    background: white;
+}
+
+#gaspar_container #gaspar_body #message_queue .filter .filter_options::-webkit-scrollbar {
+    width: 3px;
+}
+
+#gaspar_container #gaspar_body #message_queue .filter .filter_options::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#gaspar_container #gaspar_body #message_queue .filter .filter_options::-webkit-scrollbar-thumb {
+    background: #d9d9d9;
+    border-radius: 4px;
+    width: 10px;
+}
+
+#gaspar_container #gaspar_body #message_queue .filter .filter_options .filter_option{
+    cursor: pointer;
+    height: 30px;
+    padding-left: 12px;
+}
+#gaspar_container #gaspar_body #message_queue .filter .filter_options .filter_option:hover{
+    background: #f4f4f4;
 }
 
 #gaspar_container #gaspar_body #message_queue .button:hover {
@@ -467,6 +527,7 @@ body {
     bottom: -5px;
     color: black;
     opacity: 0.5;
+    display: none;
     font-family: 'Roboto', sans-serif;
     font-weight: 400;
     line-height: 14px;
