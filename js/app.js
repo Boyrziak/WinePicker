@@ -220,7 +220,7 @@ jQuery(document).ready(function ($) {
             let self = this;
             console.log('Value = ' + value);
             // let request = new Request('http://127.0.0.1:1880/hello-param/Test');
-            let request = new Request('http://008eb7fc.ngrok.io/watson/' + value, myInit);
+            let request = new Request('https://b201f851.ngrok.io/watson/' + value, myInit);
             fetch(request).then(function (response) {
                 return response.json();
             }).then(function (jsonResponse) {
