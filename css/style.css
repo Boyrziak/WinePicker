@@ -316,12 +316,14 @@ body {
 }
 
 #gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header {
-    background: url("../img/berries-bunch-colors-760281.jpg");
+    background: url("../img/BGimage.png");
+    background-size: cover;
     padding: 14px 15px 0;
     box-sizing: border-box;
     text-align: center;
     border-radius: 7px 7px 0 0;
     position: relative;
+    min-height: 146px;
 }
 
 #gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_header_name {
@@ -355,13 +357,27 @@ body {
 
 #gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_images .wine_image {
     margin-right: 4px;
+    margin-bottom: 16px;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_images .wine_image img{
+    width: 79px;
+    height: 79px;
+    border-radius: 100%;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_images .wine_country img{
+    border: 3px solid white;
+    width: 31px;
+    box-sizing: border-box;
+    border-radius: 100%;
 }
 
 #gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_properties {
     position: absolute;
     display: flex;
     flex-direction: row;
-    bottom: -25px;
+    bottom: -36px;
     width: 100%;
     left: 0;
 }
