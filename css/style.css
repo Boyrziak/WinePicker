@@ -27,7 +27,6 @@ body {
     border-radius: 15px;
     width: 240px;
     height: 90px;
-    /*overflow-y: hidden;*/
     display: none;
     text-align: center;
     flex-direction: column;

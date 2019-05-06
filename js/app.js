@@ -73,6 +73,7 @@ jQuery(document).ready(function ($) {
         inputSended: function (text) {
             let inputText = text || $(containers.INPUT).text();
             $('.filter').hide('drop', {direction: 'right'}, 700);
+            $('#message_queue').animate({paddingBottom: '8px'}, 600);
             let self = this;
             self.addMessage(inputText, 'user', 'text');
             $(containers.INPUT).empty();
@@ -220,7 +221,7 @@ jQuery(document).ready(function ($) {
             let self = this;
             console.log('Value = ' + value);
             // let request = new Request('http://127.0.0.1:1880/hello-param/Test');
-            let request = new Request('http://127.0.0.1:1880/watson/' + value, myInit);
+            let request = new Request('http://localhost:1880/watson/' + value, myInit);
             fetch(request).then(function (response) {
                 return response.json();
             }).then(function (jsonResponse) {
