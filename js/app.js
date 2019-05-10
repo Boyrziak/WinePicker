@@ -20,6 +20,9 @@ jQuery(document).ready(function ($) {
         opened: false,
         foodList: [],
         wineList:[],
+        place: 1333,
+        lang: 'en',
+        findFood: false,
         wineMessage:'',
         initialize: function () {
             let self = this;
@@ -221,7 +224,7 @@ jQuery(document).ready(function ($) {
             let self = this;
             console.log('Value = ' + value);
             // let request = new Request('http://127.0.0.1:1880/hello-param/Test');
-            let request = new Request('http://localhost:1880/watson/' + value, myInit);
+            let request = new Request('http://localhost:1880/watson?value=' + value + '&place='+self.place+'&lang='+self.lang+'&food='+self.findFood, myInit);
             fetch(request).then(function (response) {
                 return response.json();
             }).then(function (jsonResponse) {
@@ -259,6 +262,7 @@ jQuery(document).ready(function ($) {
                                 $('.filter').find('.filter_options').append('<div class="filter_option">' + food + '</div>');
                             });
                             $('.filter_option').on('click', function () {
+                                self.findFood = true;
                                 $('.filter').hide('drop', {direction: 'right'} , 700);
                                 self.addMessage($(this).text(), 'user', 'text');
                                 $('#message_queue').animate({paddingBottom: '8px'}, 700);
@@ -266,6 +270,7 @@ jQuery(document).ready(function ($) {
                         });
                         $('.filter_option').on('click', function () {
                             $('.filter').hide('drop', {direction: 'right'} , 700);
+                            self.findFood = true;
                             self.addMessage($(this).text(), 'user', 'text');
                             $('#message_queue').animate({paddingBottom: '8px'}, 700);
                         });
@@ -284,6 +289,12 @@ jQuery(document).ready(function ($) {
                                 });
                             }
                         });
+                        if (jsonResponse.food === 'true') {
+                            setTimeout(function () {
+                                self.addCarousel(self.wineList);
+                            }, 700);
+                        }
+                        self.findFood = false;
                         break;
                     case 'other':
                         jsonResponse.response.forEach(function (step) {
@@ -301,6 +312,7 @@ jQuery(document).ready(function ($) {
                                 self.addCarousel(self.wineList);
                             }, 700);
                         }
+                        self.findFood = false;
                         break;
                 }
             });
