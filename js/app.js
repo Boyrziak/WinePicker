@@ -137,6 +137,42 @@ jQuery(document).ready(function ($) {
                 let _score = card.overall_wp_score;
                 let score = _score.toString().slice(0,3);
                 let colorIMG = 'img/'+card.wine_type_name+'.png';
+                let ratingColor = '';
+                let scoreColor = '';
+                if (card.overall_rating > 60 && card.overall_rating <= 65) {
+                    ratingColor = '#ca2d26';
+                } else if (card.overall_rating > 65 && card.overall_rating <= 70) {
+                    ratingColor = '#de5a25';
+                } else if (card.overall_rating > 70 && card.overall_rating <= 75) {
+                    ratingColor = '#f47220';
+                } else if (card.overall_rating > 75 && card.overall_rating <= 80) {
+                    ratingColor = '#f8b316';
+                } else if (card.overall_rating > 80 && card.overall_rating <= 85) {
+                    ratingColor = '#d4da22';
+                } else if (card.overall_rating > 85 && card.overall_rating <= 90) {
+                    ratingColor = '#abd036';
+                } else if (card.overall_rating > 90 && card.overall_rating <= 95) {
+                    ratingColor = '#75c042';
+                }else if (card.overall_rating > 95) {
+                    ratingColor = '#3ab764';
+                }
+                if (score > 2 && score <= 3) {
+                    scoreColor = '#ca2d26';
+                } else if (score > 3 && score <= 4) {
+                    scoreColor = '#de5a25';
+                } else if (score > 4 && score <= 5) {
+                    scoreColor = '#f47220';
+                } else if (score > 5 && score <= 6) {
+                    scoreColor = '#f8b316';
+                } else if (score > 6 && score <= 7) {
+                    scoreColor = '#d4da22';
+                } else if (score > 7 && score <= 8) {
+                    scoreColor = '#abd036';
+                } else if (score > 8 && score <= 9) {
+                    scoreColor = '#75c042';
+                } else if (score > 9 && score <= 10) {
+                    scoreColor = '#3ab764';
+                }
                 console.log(card.wine_type_name);
                 $(carousel).append(`<div class="wine_card">
                                         <div class="wine_card_header">
@@ -167,11 +203,11 @@ jQuery(document).ready(function ($) {
                                                     <span class="property_name">food match</span>
                                                 </div>
                                                 <div class="wine_property">
-                                                     <span class="property_number">`+card.overall_rating+`</span>
+                                                     <span class="property_number" style="background: ${ratingColor}">`+card.overall_rating+`</span>
                                                      <span class="property_name">rating</span>
                                                 </div>
                                                 <div class="wine_property">
-                                                    <span class="property_number">`+score+`</span>
+                                                    <span class="property_number" style="background: ${scoreColor}">`+score+`</span>
                                                     <span class="property_name">score</span>
                                                 </div>
                                             </div>
