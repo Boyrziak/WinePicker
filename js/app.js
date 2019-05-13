@@ -126,7 +126,15 @@ jQuery(document).ready(function ($) {
             $(newMessage).addClass('button');
             $(newMessage).append(button.label);
             newMessage.addEventListener('click', function () {
-                self.addMessage(button.label, 'user', 'text');
+                let regExp = /:\s(\w*)/gi;
+                let buttonLocale = regExp.exec(button.label);
+                if (!buttonLocale) {
+                    self.addMessage(button.label, 'user', 'text');
+                } else {
+                    console.log(buttonLocale);
+                    self.lang = buttonLocale[1];
+                    self.postToAPI('Hello');
+                }
             });
             $(newMessage).appendTo(containers.QUEUE).show('drop', options, 700);
         },
