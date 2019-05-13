@@ -43,6 +43,7 @@ jQuery(document).ready(function ($) {
             // // self.postToAPI('Hello');
             // this.addMessage([{name: 'Bodega Colome,Estate'}, {name: 'Bodega Colome,Estate'}, {name: 'Bodega Colome,Estate'}], 'gaspar', 'carousel');
             self.postToAPI('Hello');
+            // self.translateMessage('Hello');
         },
         clickButton: function () {
             let self = this;
@@ -326,12 +327,10 @@ jQuery(document).ready(function ($) {
                                 });
                             }
                         });
-                        if (jsonResponse.food === 'true') {
-                            setTimeout(function () {
-                                self.addCarousel(self.wineList);
-                            }, 700);
-                        }
-                        self.findFood = false;
+                        self.addMessage(jsonResponse.message, 'gaspar', 'text');
+                        setTimeout(function () {
+                            self.addCarousel(self.wineList);
+                        }, 700);
                         break;
                     case 'other':
                         jsonResponse.response.forEach(function (step) {
@@ -354,11 +353,23 @@ jQuery(document).ready(function ($) {
                 }
             });
         },
-        translateMessage: function(text) {
-
-            let translation = text;
-
-            return translation;
+        translateMessage: function(message) {
+            let self = this;
+            let myInit = {
+              method: 'POST',
+              headers: {apikey: 'butnDp7kFuTJbowyZM7q0juchgLBc2jmbl25ZfUS_jPW', 'Content-Type': 'application/json'},
+              data: {
+                  text: message,
+                  source: self.lang,
+                  target: 'en'
+              }
+            };
+            let request = new Request('https://gateway.watsonplatform.net/language-translator/api/v3/translate?version=2018-05-01', myInit);
+            fetch(request).then((response)=>{
+                console.log(response);
+            });
+            // let translation = text;
+            // return translation;
         },
         showPreview: function (text) {
             let self = this;
