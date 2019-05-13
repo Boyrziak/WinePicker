@@ -280,6 +280,7 @@ jQuery(document).ready(function ($) {
                     switch (jsonResponse.type) {
                         case 'dishes':
                             self.foodList = jsonResponse.data;
+                            $('.filter_options').empty();
                             $('.filter_input_changeable').empty();
                             jsonResponse.data.forEach(function (dish) {
                                 $('.filter').find('.filter_options').append('<div class="filter_option">' + dish + '</div>');
@@ -324,8 +325,6 @@ jQuery(document).ready(function ($) {
                             });
                             break;
                         case 'wines':
-                            self.wineList = jsonResponse.data;
-                            self.wineMessage = jsonResponse.message;
                             console.log(self.wineList.length);
                             jsonResponse.text.forEach(function (step) {
                                 if (step.response_type === 'text') {
@@ -340,7 +339,7 @@ jQuery(document).ready(function ($) {
                             });
                             self.addMessage(jsonResponse.message, 'gaspar', 'text');
                             setTimeout(function () {
-                                self.addCarousel(self.wineList);
+                                self.addCarousel(jsonResponse.data);
                             }, 700);
                             self.postToAPI('Exit', true);
                             break;
@@ -348,7 +347,7 @@ jQuery(document).ready(function ($) {
                             self.addMessage(jsonResponse.message, 'gaspar', 'text');
                             self.wineList = jsonResponse.data;
                             setTimeout(function () {
-                                self.addCarousel(self.wineList);
+                                self.addCarousel(jsonResponse.data);
                             }, 700);
                             self.postToAPI('Exit', true);
                             break;
