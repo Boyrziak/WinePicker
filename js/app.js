@@ -22,6 +22,7 @@ jQuery(document).ready(function ($) {
         wineList:[],
         place: 1333,
         lang: 'en',
+        user_id: 123456,
         findFood: false,
         wineMessage:'',
         initialize: function () {
@@ -260,7 +261,7 @@ jQuery(document).ready(function ($) {
             let self = this;
             console.log('Value = ' + value);
             // let request = new Request('http://127.0.0.1:1880/hello-param/Test');
-            let request = new Request('http://localhost:1880/watson?value=' + value + '&place='+self.place+'&lang='+self.lang+'&food='+self.findFood, myInit);
+            let request = new Request('http://localhost:1880/watson/'+self.user_id+'/'+self.place+'/?value=' + value + '&lang='+self.lang+'&food='+self.findFood, myInit);
             fetch(request).then(function (response) {
                 return response.json();
             }).then(function (jsonResponse) {
@@ -352,6 +353,12 @@ jQuery(document).ready(function ($) {
                         break;
                 }
             });
+        },
+        translateMessage: function(text) {
+
+            let translation = text;
+
+            return translation;
         },
         showPreview: function (text) {
             let self = this;
