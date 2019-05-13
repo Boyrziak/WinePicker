@@ -344,6 +344,17 @@ jQuery(document).ready(function ($) {
                             self.postToAPI('Exit', true);
                             break;
                         case 'pairing':
+                            jsonResponse.text.forEach(function (step) {
+                                if (step.response_type === 'text') {
+                                    self.addMessage(step.text, 'gaspar', 'text');
+                                } else if (step.response_type === 'option') {
+                                    self.addMessage(step.title, 'gaspar', 'text');
+                                    step.options.forEach(function (option) {
+                                        self.addMessage(option, 'gaspar', 'button');
+                                    });
+                                }
+                                self.postToAPI('Exit', true);
+                            });
                             self.addMessage(jsonResponse.message, 'gaspar', 'text');
                             self.wineList = jsonResponse.data;
                             setTimeout(function () {
