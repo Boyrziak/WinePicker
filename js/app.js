@@ -27,6 +27,7 @@ jQuery(document).ready(function ($) {
         pause_timer: 500,
         type_timer: 4000,
         wineMessage: '',
+        previous_sender: 'gaspar',
         initialize: function () {
             let self = this;
             this.button.on('click', self.clickButton);
@@ -96,7 +97,7 @@ jQuery(document).ready(function ($) {
                         self.addText(value, sender, options);
                         break;
                     case 'button':
-                        self.addButtons(value, options);
+                        self.addButtons(value, options, sender);
                         break;
                     case 'carousel':
                         self.addCarousel(value);
@@ -113,6 +114,9 @@ jQuery(document).ready(function ($) {
             $(newMessage).addClass('message ' + sender + '_message');
             $(newMessage).append(text);
             $(newMessage).appendTo(containers.QUEUE).show('drop', options, 700);
+            if (sender === self.previous_sender) {
+                $(newMessage).css('margin-top', '5px');
+            }
             $('#gaspar_preview_container').find('.preview_text').empty().text(text);
             if (sender === 'user') {
                 self.postToAPI(text);
@@ -121,8 +125,9 @@ jQuery(document).ready(function ($) {
                     $('#gaspar_preview_container').show('drop', options, 700);
                 }
             }
+            self.previous_sender = sender;
         },
-        addButtons: function (button, options) {
+        addButtons: function (button, options, sender) {
             let self = this;
             let newMessage = document.createElement('div');
             $(newMessage).addClass('button');
@@ -139,6 +144,10 @@ jQuery(document).ready(function ($) {
                 }
             });
             $(newMessage).appendTo(containers.QUEUE).show('drop', options, 700);
+            if (sender === self.previous_sender) {
+                $(newMessage).css('margin-top', '5px');
+            }
+            self.previous_sender = sender;
         },
         addCarousel: function (cards) {
             let self = this;

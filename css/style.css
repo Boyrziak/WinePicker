@@ -129,7 +129,7 @@ body {
     line-height: 18px;
     font-size: 14px;
     padding: 10px 12px;
-    margin-bottom: 12px;
+    margin-top: 12px;
     box-sizing: border-box;
     overflow-wrap: break-word;
 }
@@ -165,7 +165,7 @@ body {
     box-sizing: border-box;
     transition: .3s ease-in;
     cursor: pointer;
-    margin-bottom: 12px;
+    margin-top: 12px;
     max-width: 200px;
     margin-left: 48px;
 }
@@ -456,6 +456,7 @@ body {
     display: none;
     position: absolute;
     bottom: 78px;
+    margin-bottom: 12px;
 }
 
 #gaspar_container #gaspar_body #message_queue #waves_message #wave {
