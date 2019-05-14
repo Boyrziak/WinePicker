@@ -294,6 +294,8 @@ jQuery(document).ready(function ($) {
                         case 'dishes':
                             self.foodList = jsonResponse.data;
                             setTimeout(() => {
+                                $('#message_queue').animate({paddingBottom: '60px'}, 700);
+                                self.scrollQuery(200);
                                 $('#waves_message').show('drop', {'direction': 'left'}, 300);
                                 setTimeout(() => {
                                     $('.filter_options').empty();
@@ -348,8 +350,11 @@ jQuery(document).ready(function ($) {
                         case 'wines':
                             console.log(self.wineList.length);
                             setTimeout(() => {
+                                $('#message_queue').animate({paddingBottom: '60px'}, 700);
+                                self.scrollQuery(200);
                                 $('#waves_message').show('drop', {'direction': 'left'}, 300);
                                 setTimeout(() => {
+                                    $('#message_queue').animate({paddingBottom: '8px'}, 700);
                                     $('#waves_message').hide('drop', {'direction': 'left'}, 300);
                                     jsonResponse.text.forEach(function (step) {
                                         if (step.response_type === 'text') {
@@ -372,8 +377,11 @@ jQuery(document).ready(function ($) {
                             break;
                         case 'pairing':
                             setTimeout(() => {
+                                $('#message_queue').animate({paddingBottom: '60px'}, 700);
+                                self.scrollQuery(200);
                                 $('#waves_message').show('drop', {'direction': 'left'}, 300);
                                 setTimeout(() => {
+                                    $('#message_queue').animate({paddingBottom: '8px'}, 700);
                                     $('#waves_message').hide('drop', {'direction': 'left'}, 300);
                                     jsonResponse.text.forEach(function (step) {
                                         if (step.response_type === 'text') {
@@ -397,8 +405,11 @@ jQuery(document).ready(function ($) {
                             break;
                         case 'other':
                             setTimeout(() => {
+                                $('#message_queue').animate({paddingBottom: '60px'}, 700);
+                                self.scrollQuery(200);
                                 $('#waves_message').show('drop', {'direction': 'left'}, 300);
                                 setTimeout(() => {
+                                    $('#message_queue').animate({paddingBottom: '8px'}, 700);
                                     $('#waves_message').hide('drop', {'direction': 'left'}, 300);
                                     jsonResponse.response.forEach(function (step) {
                                         if (step.response_type === 'text') {
