@@ -22,7 +22,7 @@ jQuery(document).ready(function ($) {
         wineList: [],
         place: 1333,
         lang: 'en',
-        user_id: 123456,
+        user_id: 0,
         findFood: false,
         pause_timer: 500,
         type_timer: 4000,
@@ -38,6 +38,14 @@ jQuery(document).ready(function ($) {
             this.send.on('click', function () {
                 self.inputSended();
             });
+            let new_id = self.getRandomId(1000, 9999);
+            console.log(`ID: ${new_id}`);
+            let cookie = self.getCookie('user_id');
+            if (!cookie){
+                self.setCookie('user_id', new_id);
+            }
+            self.user_id = cookie;
+            console.log(`Cookie: ${cookie}`);
             // this.addMessage('Hello! My name is Gaspar, I will be your sommelier today.', 'gaspar', 'text');
             // this.addMessage('How can I help you today?', 'gaspar', 'text');
             // this.addMessage({label: 'Find wine for my meal'}, 'gaspar', 'button');
@@ -47,6 +55,9 @@ jQuery(document).ready(function ($) {
             // this.addMessage([{name: 'Bodega Colome,Estate'}, {name: 'Bodega Colome,Estate'}, {name: 'Bodega Colome,Estate'}], 'gaspar', 'carousel');
             self.postToAPI('Hello');
             // self.translateMessage('Hello');
+        },
+        getRandomId: function (min, max) {
+            return Math.floor(Math.random() * (max - min)) + min;
         },
         clickButton: function () {
             let self = this;
@@ -263,6 +274,47 @@ jQuery(document).ready(function ($) {
             $(carouselWrap).append(rightButton);
             $(carouselWrap).append(carousel);
             $('#message_queue').append(carouselWrap);
+        },
+        setCookie: function (name, value, options) {
+            options = options || {};
+
+            var expires = options.expires;
+
+            if (typeof expires === 'number' && expires) {
+                var d = new Date();
+                d.setTime(d.getTime() + expires * 1000);
+                expires = options.expires = d;
+            }
+            if (expires && expires.toUTCString) {
+                options.expires = expires.toUTCString();
+            }
+
+            value = encodeURIComponent(value);
+
+            var updatedCookie = name + '=' + value;
+
+            for (var propName in options) {
+                updatedCookie += '; ' + propName;
+                var propValue = options[propName];
+                if (propValue !== true) {
+                    updatedCookie += '=' + propValue;
+                }
+            }
+
+            document.cookie = updatedCookie;
+        },
+        getCookie: function (name) {
+            var matches = document.cookie.match(new RegExp(
+                // eslint-disable-next-line no-useless-escape
+                '(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'
+            ));
+            return matches ? decodeURIComponent(matches[1]) : undefined;
+        },
+        deleteCookie: function (name) {
+            const self = this;
+            self.setCookie(name, '', {
+                expires: -1
+            });
         },
         getWineFromApi: function () {
             let self = this;
