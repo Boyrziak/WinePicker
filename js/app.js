@@ -54,7 +54,7 @@ jQuery(document).ready(function ($) {
             // // self.postToAPI('Hello');
             // this.addMessage([{name: 'Bodega Colome,Estate'}, {name: 'Bodega Colome,Estate'}, {name: 'Bodega Colome,Estate'}], 'gaspar', 'carousel');
             self.postToAPI('Hello');
-            // self.translateMessage('Hello');
+            self.translateMessage('Hello');
         },
         getRandomId: function (min, max) {
             return Math.floor(Math.random() * (max - min)) + min;
@@ -484,7 +484,7 @@ jQuery(document).ready(function ($) {
             let self = this;
             let myInit = {
                 method: 'POST',
-                headers: {apikey: 'butnDp7kFuTJbowyZM7q0juchgLBc2jmbl25ZfUS_jPW', 'Content-Type': 'application/json'},
+                headers: {apikey: 'butnDp7kFuTJbowyZM7q0juchgLBc2jmbl25ZfUS_jPW', 'Content-Type': 'application/json', 'Access-Control-Request-Headers': 'apikey'},
                 data: {
                     text: message,
                     source: self.lang,
