@@ -109,6 +109,7 @@ body {
     padding: 0 14px 0 0;
     margin-bottom: 2px;
     box-sizing: border-box;
+    border-bottom: 2px solid #F4F4F4;
 }
 
 #gaspar_container #gaspar_body #message_queue {
@@ -125,7 +126,7 @@ body {
 #gaspar_container #gaspar_body #message_queue .message {
     max-width: 200px;
     font-family: 'Roboto', 'sans-serif';
-    line-height: 20px;
+    line-height: 18px;
     font-size: 14px;
     padding: 10px 12px;
     margin-bottom: 12px;
@@ -136,7 +137,7 @@ body {
 #gaspar_container #gaspar_body #message_queue .gaspar_message {
     background: #f1824a;
     border-radius: 15px 15px 15px 0;
-    font-weight: 500;
+    font-weight: 400;
     color: white;
     align-self: flex-start;
     margin-left: 48px;
@@ -315,7 +316,7 @@ body {
 }
 
 #gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header {
-    background: url("../img/BGimage.png");
+    background: url("../img/background.png");
     background-size: cover;
     padding: 14px 15px 0;
     box-sizing: border-box;
@@ -532,12 +533,12 @@ body {
 /*bottom: -34px;*/
 /*}*/
 
-#gaspar_container #gaspar_bottom .gaaspar_tail {
+#gaspar_container #gaspar_bottom .gaspar_tail {
     width: 50px;
     height: 34px;
     position: absolute;
     right: 0;
-    bottom: -34px;
+    bottom: -33px;
 }
 
 #gaspar_container #gaspar_bottom #bottom_text {
