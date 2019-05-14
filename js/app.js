@@ -145,6 +145,8 @@ jQuery(document).ready(function ($) {
             cards.forEach(function (card) {
                 let imageHolder = card.image||'img/wines_in_my_wish_list.jpg';
                 let _score = card.overall_wp_score;
+                let foodMatch = card.normalised_foodmatch;
+                let normalizedMatch = foodMatch.toString().slice(0,3);
                 let score = _score.toString().slice(0,3);
                 let colorIMG = 'img/'+card.wine_type_name+'.png';
                 let ratingColor = '';
@@ -190,7 +192,7 @@ jQuery(document).ready(function ($) {
                                                 ` + card.wine_name + ` ` + card.wine_subtype_name + `
                                             </div>
                                             <div class="wine_header_origin">
-                                                ` + card.wine_year +` `+ card.wine_area_name +`
+                                                ` + card.wine_year +` `+ card.area_name +`
                                             </div>
                                             <div class="wine_images">
                                                 <div class="wine_color">
@@ -209,7 +211,7 @@ jQuery(document).ready(function ($) {
                                                     <span class="property_name">price</span>
                                                 </div>
                                                 <div class="wine_property">
-                                                    <span class="property_number">`+card.normalised_foodmatch+`</span>
+                                                    <span class="property_number">`+normalizedMatch+`</span>
                                                     <span class="property_name">food match</span>
                                                 </div>
                                                 <div class="wine_property">
