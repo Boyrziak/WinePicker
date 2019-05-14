@@ -19,12 +19,14 @@ jQuery(document).ready(function ($) {
         previewTimer: null,
         opened: false,
         foodList: [],
-        wineList:[],
+        wineList: [],
         place: 1333,
         lang: 'en',
         user_id: 123456,
         findFood: false,
-        wineMessage:'',
+        pause_timer: 500,
+        type_timer: 4000,
+        wineMessage: '',
         initialize: function () {
             let self = this;
             this.button.on('click', self.clickButton);
@@ -143,12 +145,12 @@ jQuery(document).ready(function ($) {
             let carousel = document.createElement('div');
             $(carousel).addClass('card_carousel');
             cards.forEach(function (card) {
-                let imageHolder = card.image||'img/wines_in_my_wish_list.jpg';
+                let imageHolder = card.image || 'img/wines_in_my_wish_list.jpg';
                 let _score = card.overall_wp_score;
                 let foodMatch = card.normalised_foodmatch;
-                let normalizedMatch = foodMatch.toString().slice(0,3);
-                let score = _score.toString().slice(0,3);
-                let colorIMG = 'img/'+card.wine_type_name+'.png';
+                let normalizedMatch = foodMatch.toString().slice(0, 3);
+                let score = _score.toString().slice(0, 3);
+                let colorIMG = 'img/' + card.wine_type_name + '.png';
                 let ratingColor = '';
                 let scoreColor = '';
                 if (card.overall_rating > 60 && card.overall_rating <= 65) {
@@ -165,7 +167,7 @@ jQuery(document).ready(function ($) {
                     ratingColor = '#abd036';
                 } else if (card.overall_rating > 90 && card.overall_rating <= 95) {
                     ratingColor = '#75c042';
-                }else if (card.overall_rating > 95) {
+                } else if (card.overall_rating > 95) {
                     ratingColor = '#3ab764';
                 }
                 if (score > 2 && score <= 3) {
@@ -192,42 +194,42 @@ jQuery(document).ready(function ($) {
                                                 ` + card.wine_name + ` ` + card.wine_subtype_name + `
                                             </div>
                                             <div class="wine_header_origin">
-                                                ` + card.wine_year +` `+ card.area_name +`
+                                                ` + card.wine_year + ` ` + card.area_name + `
                                             </div>
                                             <div class="wine_images">
                                                 <div class="wine_color">
-                                                    <img src="`+colorIMG+`">
+                                                    <img src="` + colorIMG + `">
                                                 </div>
                                                 <div class="wine_image">
-                                                    <img src="`+imageHolder+`">
+                                                    <img src="` + imageHolder + `">
                                                 </div>
                                                 <div class="wine_country">
-                                                    <img src="`+card.country_flag+`">
+                                                    <img src="` + card.country_flag + `">
                                                 </div>
                                             </div>
                                             <div class="wine_properties">
                                                 <div class="wine_property">
-                                                    <span class="property_number">`+card.price+`</span>
+                                                    <span class="property_number">` + card.price + `</span>
                                                     <span class="property_name">price</span>
                                                 </div>
                                                 <div class="wine_property">
-                                                    <span class="property_number">`+normalizedMatch+`</span>
+                                                    <span class="property_number">` + normalizedMatch + `</span>
                                                     <span class="property_name">food match</span>
                                                 </div>
                                                 <div class="wine_property">
-                                                     <span class="property_number" style="background: ${ratingColor}">`+card.overall_rating+`</span>
+                                                     <span class="property_number" style="background: ${ratingColor}">` + card.overall_rating + `</span>
                                                      <span class="property_name">rating</span>
                                                 </div>
                                                 <div class="wine_property">
-                                                    <span class="property_number" style="background: ${scoreColor}">`+score+`</span>
+                                                    <span class="property_number" style="background: ${scoreColor}">` + score + `</span>
                                                     <span class="property_name">score</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="wine_card_description">
-                                            <span class="wine_description_name">`+card.wine_subtype_name+`</span>
+                                            <span class="wine_description_name">` + card.wine_subtype_name + `</span>
                                             <p class="wine_description_text">
-                                                `+card.wm_notes+`
+                                                ` + card.wm_notes + `
                                             </p>
                                         </div>
                                     </div>`);
@@ -273,7 +275,7 @@ jQuery(document).ready(function ($) {
             let self = this;
             console.log('Value = ' + value);
             // let request = new Request('http://127.0.0.1:1880/hello-param/Test');
-            let request = new Request('http://localhost:1880/watson/'+self.user_id+'/'+self.place+'/?value=' + value + '&lang='+self.lang+'&food='+self.findFood, myInit);
+            let request = new Request('http://localhost:1880/watson/' + self.user_id + '/' + self.place + '/?value=' + value + '&lang=' + self.lang + '&food=' + self.findFood, myInit);
             fetch(request).then(function (response) {
                 return response.json();
             }).then(function (jsonResponse) {
@@ -290,16 +292,22 @@ jQuery(document).ready(function ($) {
                             $('#message_queue').animate({paddingBottom: '60px'}, 700);
                             $('.filter').show('drop', {direction: 'right'}, 700);
                             console.log(self.foodList.length);
-                            jsonResponse.text.forEach(function (step) {
-                                if (step.response_type === 'text') {
-                                    self.addMessage(step.text, 'gaspar', 'text');
-                                } else if (step.response_type === 'option') {
-                                    self.addMessage(step.title, 'gaspar', 'text');
-                                    step.options.forEach(function (option) {
-                                        self.addMessage(option, 'gaspar', 'button');
+                            setTimeout(() => {
+                                $('#waves_message').show('drop', {'direction': 'left'}, 300);
+                                setTimeout(() => {
+                                    $('#waves_message').hide('drop', {'direction': 'left'}, 300);
+                                    jsonResponse.text.forEach(function (step) {
+                                        if (step.response_type === 'text') {
+                                            self.addMessage(step.text, 'gaspar', 'text');
+                                        } else if (step.response_type === 'option') {
+                                            self.addMessage(step.title, 'gaspar', 'text');
+                                            step.options.forEach(function (option) {
+                                                self.addMessage(option, 'gaspar', 'button');
+                                            });
+                                        }
                                     });
-                                }
-                            });
+                                }, self.type_timer);
+                            }, self.pause_timer);
                             $('.filter_input_changeable').keydown(function (e) {
                                 e.keyCode === 13 ? (e.preventDefault(), self.inputSended($('.filter_input_changeable').text())) : null;
                             });
@@ -328,77 +336,89 @@ jQuery(document).ready(function ($) {
                             break;
                         case 'wines':
                             console.log(self.wineList.length);
-                            jsonResponse.text.forEach(function (step) {
-                                if (step.response_type === 'text') {
-                                    self.addMessage(step.text, 'gaspar', 'text');
-                                } else if (step.response_type === 'option') {
-                                    self.addMessage(step.title, 'gaspar', 'text');
-                                    step.options.forEach(function (option) {
-                                        self.addMessage(option, 'gaspar', 'button');
+                            setTimeout(() => {
+                                $('#waves_message').show('drop', {'direction': 'left'}, 300);
+                                setTimeout(() => {
+                                    $('#waves_message').hide('drop', {'direction': 'left'}, 300);
+                                    jsonResponse.text.forEach(function (step) {
+                                        if (step.response_type === 'text') {
+                                            self.addMessage(step.text, 'gaspar', 'text');
+                                        } else if (step.response_type === 'option') {
+                                            self.addMessage(step.title, 'gaspar', 'text');
+                                            step.options.forEach(function (option) {
+                                                self.addMessage(option, 'gaspar', 'button');
+                                            });
+                                        }
+                                        self.postToAPI('Exit', true);
                                     });
-                                }
-                                self.postToAPI('Exit', true);
-                            });
-                            self.addMessage(jsonResponse.message, 'gaspar', 'text');
-                            setTimeout(function () {
-                                self.addCarousel(jsonResponse.data);
-                            }, 700);
-                            self.postToAPI('Exit', true);
+                                    self.addMessage(jsonResponse.message, 'gaspar', 'text');
+                                    setTimeout(function () {
+                                        self.addCarousel(jsonResponse.data);
+                                    }, 700);
+                                    self.postToAPI('Exit', true);
+                                }, self.type_timer);
+                            }, self.pause_timer);
                             break;
                         case 'pairing':
-                            jsonResponse.text.forEach(function (step) {
-                                if (step.response_type === 'text') {
-                                    self.addMessage(step.text, 'gaspar', 'text');
-                                } else if (step.response_type === 'option') {
-                                    self.addMessage(step.title, 'gaspar', 'text');
-                                    step.options.forEach(function (option) {
-                                        self.addMessage(option, 'gaspar', 'button');
+                            setTimeout(() => {
+                                $('#waves_message').show('drop', {'direction': 'left'}, 300);
+                                setTimeout(() => {
+                                    $('#waves_message').hide('drop', {'direction': 'left'}, 300);
+                                    jsonResponse.text.forEach(function (step) {
+                                        if (step.response_type === 'text') {
+                                            self.addMessage(step.text, 'gaspar', 'text');
+                                        } else if (step.response_type === 'option') {
+                                            self.addMessage(step.title, 'gaspar', 'text');
+                                            step.options.forEach(function (option) {
+                                                self.addMessage(option, 'gaspar', 'button');
+                                            });
+                                        }
+                                        self.postToAPI('Exit', true);
                                     });
-                                }
-                                self.postToAPI('Exit', true);
-                            });
-                            self.addMessage(jsonResponse.message, 'gaspar', 'text');
-                            self.wineList = jsonResponse.data;
-                            setTimeout(function () {
-                                self.addCarousel(jsonResponse.data);
-                            }, 700);
-                            self.postToAPI('Exit', true);
+                                    self.addMessage(jsonResponse.message, 'gaspar', 'text');
+                                    self.wineList = jsonResponse.data;
+                                    setTimeout(function () {
+                                        self.addCarousel(jsonResponse.data);
+                                    }, 700);
+                                    self.postToAPI('Exit', true);
+                                }, self.type_timer);
+                            }, self.pause_timer);
                             break;
                         case 'other':
-                            jsonResponse.response.forEach(function (step) {
-                                if (step.response_type === 'text') {
-                                    self.addMessage(step.text, 'gaspar', 'text');
-                                } else if (step.response_type === 'option') {
-                                    self.addMessage(step.title, 'gaspar', 'text');
-                                    step.options.forEach(function (option) {
-                                        self.addMessage(option, 'gaspar', 'button');
+                            setTimeout(() => {
+                                $('#waves_message').show('drop', {'direction': 'left'}, 300);
+                                setTimeout(() => {
+                                    $('#waves_message').hide('drop', {'direction': 'left'}, 300);
+                                    jsonResponse.response.forEach(function (step) {
+                                        if (step.response_type === 'text') {
+                                            self.addMessage(step.text, 'gaspar', 'text');
+                                        } else if (step.response_type === 'option') {
+                                            self.addMessage(step.title, 'gaspar', 'text');
+                                            step.options.forEach(function (option) {
+                                                self.addMessage(option, 'gaspar', 'button');
+                                            });
+                                        }
                                     });
-                                }
-                            });
-                            if (jsonResponse.response[1].text === 'Result: ') {
-                                setTimeout(function () {
-                                    self.addCarousel(self.wineList);
-                                }, 700);
-                            }
-                            self.findFood = false;
+                                }, self.type_timer);
+                            }, self.pause_timer);
                             break;
                     }
                 }
             });
         },
-        translateMessage: function(message) {
+        translateMessage: function (message) {
             let self = this;
             let myInit = {
-              method: 'POST',
-              headers: {apikey: 'butnDp7kFuTJbowyZM7q0juchgLBc2jmbl25ZfUS_jPW', 'Content-Type': 'application/json'},
-              data: {
-                  text: message,
-                  source: self.lang,
-                  target: 'en'
-              }
+                method: 'POST',
+                headers: {apikey: 'butnDp7kFuTJbowyZM7q0juchgLBc2jmbl25ZfUS_jPW', 'Content-Type': 'application/json'},
+                data: {
+                    text: message,
+                    source: self.lang,
+                    target: 'en'
+                }
             };
             let request = new Request('https://gateway.watsonplatform.net/language-translator/api/v3/translate?version=2018-05-01', myInit);
-            fetch(request).then((response)=>{
+            fetch(request).then((response) => {
                 console.log(response);
             });
             // let translation = text;
