@@ -293,17 +293,17 @@ jQuery(document).ready(function ($) {
                     switch (jsonResponse.type) {
                         case 'dishes':
                             self.foodList = jsonResponse.data;
-                            $('.filter_options').empty();
-                            $('.filter_input_changeable').empty();
-                            jsonResponse.data.forEach(function (dish) {
-                                $('.filter').find('.filter_options').append('<div class="filter_option">' + dish + '</div>');
-                            });
-                            $('#message_queue').animate({paddingBottom: '60px'}, 700);
-                            $('.filter').show('drop', {direction: 'right'}, 700);
-                            console.log(self.foodList.length);
                             setTimeout(() => {
                                 $('#waves_message').show('drop', {'direction': 'left'}, 300);
                                 setTimeout(() => {
+                                    $('.filter_options').empty();
+                                    $('.filter_input_changeable').empty();
+                                    jsonResponse.data.forEach(function (dish) {
+                                        $('.filter').find('.filter_options').append('<div class="filter_option">' + dish + '</div>');
+                                    });
+                                    $('#message_queue').animate({paddingBottom: '60px'}, 700);
+                                    $('.filter').show('drop', {direction: 'right'}, 700);
+                                    console.log(self.foodList.length);
                                     $('#waves_message').hide('drop', {'direction': 'left'}, 300);
                                     jsonResponse.text.forEach(function (step) {
                                         if (step.response_type === 'text') {
@@ -315,33 +315,35 @@ jQuery(document).ready(function ($) {
                                             });
                                         }
                                     });
+                                    $('.filter_input_changeable').keydown(function (e) {
+                                        e.keyCode === 13 ? (e.preventDefault(), self.inputSended($('.filter_input_changeable').text())) : null;
+                                    });
+                                    $('.filter_input_changeable').on('input', () => {
+                                        let filteredFood = self.foodList.filter(function (element) {
+                                            let ignoreCase = element.toLowerCase();
+                                            let text = $('.filter_input_changeable').text().toLowerCase();
+                                            return element.includes(text);
+                                            // return element.includes($('.filter_input_changeable').text());
+                                        });
+                                        $('.filter').find('.filter_options').empty();
+                                        filteredFood.forEach((food) => {
+                                            $('.filter').find('.filter_options').append('<div class="filter_option">' + food + '</div>');
+                                        });
+                                        $('.filter_option').on('click', function () {
+                                            self.findFood = true;
+                                            $('.filter').hide('drop', {direction: 'right'}, 700);
+                                            self.addMessage($(this).text(), 'user', 'text');
+                                            $('#message_queue').animate({paddingBottom: '8px'}, 700);
+                                        });
+                                    });
+                                    $('.filter_option').on('click', function () {
+                                        $('.filter').hide('drop', {direction: 'right'}, 700);
+                                        self.findFood = true;
+                                        self.addMessage($(this).text(), 'user', 'text');
+                                        $('#message_queue').animate({paddingBottom: '8px'}, 700);
+                                    });
                                 }, self.type_timer);
                             }, self.pause_timer);
-                            $('.filter_input_changeable').keydown(function (e) {
-                                e.keyCode === 13 ? (e.preventDefault(), self.inputSended($('.filter_input_changeable').text())) : null;
-                            });
-                            $('.filter_input_changeable').on('input', () => {
-                                console.log('Input: ' + $('.filter_input_changeable').text());
-                                let filteredFood = self.foodList.filter(function (element) {
-                                    return element.includes($('.filter_input_changeable').text());
-                                });
-                                $('.filter').find('.filter_options').empty();
-                                filteredFood.forEach((food) => {
-                                    $('.filter').find('.filter_options').append('<div class="filter_option">' + food + '</div>');
-                                });
-                                $('.filter_option').on('click', function () {
-                                    self.findFood = true;
-                                    $('.filter').hide('drop', {direction: 'right'}, 700);
-                                    self.addMessage($(this).text(), 'user', 'text');
-                                    $('#message_queue').animate({paddingBottom: '8px'}, 700);
-                                });
-                            });
-                            $('.filter_option').on('click', function () {
-                                $('.filter').hide('drop', {direction: 'right'}, 700);
-                                self.findFood = true;
-                                self.addMessage($(this).text(), 'user', 'text');
-                                $('#message_queue').animate({paddingBottom: '8px'}, 700);
-                            });
                             break;
                         case 'wines':
                             console.log(self.wineList.length);

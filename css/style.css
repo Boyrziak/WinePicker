@@ -182,7 +182,7 @@ body {
     align-self: flex-end;
     width: 200px;
     position: absolute;
-    bottom: -105px;
+    bottom: -115px;
     z-index: 100;
     display: none;
 }
