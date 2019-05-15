@@ -15,7 +15,7 @@ jQuery(document).ready(function ($) {
         body: $(containers.CONTAINER),
         input: $(containers.INPUT),
         send: $(containers.SEND_BUTTON),
-        messageQueue: 0,
+        messageQueue: [],
         previewTimer: null,
         opened: false,
         foodList: [],
@@ -24,8 +24,8 @@ jQuery(document).ready(function ($) {
         lang: 'en',
         user_id: 0,
         findFood: false,
-        pause_timer: 500,
-        type_timer: 4000,
+        pause_timer: 700,
+        type_timer: 1500,
         wineMessage: '',
         previous_sender: 'gaspar',
         initialize: function () {
@@ -41,7 +41,7 @@ jQuery(document).ready(function ($) {
             let new_id = self.getRandomId(1000, 9999);
             console.log(`ID: ${new_id}`);
             let cookie = self.getCookie('user_id');
-            if (!cookie){
+            if (!cookie) {
                 self.setCookie('user_id', new_id);
             }
             self.user_id = cookie;
@@ -99,10 +99,9 @@ jQuery(document).ready(function ($) {
         },
         addMessage: function (value, sender, type) {
             let self = this;
-            self.messageQueue++;
             setTimeout(function () {
                 let options = {direction: ''};
-                sender === 'gaspar' ? (options.direction = 'left') : options.direction = 'right';
+                sender === 'gaspar' ? (options.direction = 'up') : options.direction = 'right';
                 switch (type) {
                     case 'text':
                         self.addText(value, sender, options);
@@ -114,8 +113,7 @@ jQuery(document).ready(function ($) {
                         self.addCarousel(value);
                         break;
                 }
-                self.messageQueue--;
-                self.messageQueue === 0 ?
+                self.messageQueue.length === 0 ?
                     self.scrollQuery(400) : null;
             }, 600);
         },
@@ -124,9 +122,14 @@ jQuery(document).ready(function ($) {
             let newMessage = document.createElement('div');
             $(newMessage).addClass('message ' + sender + '_message');
             $(newMessage).append(text);
-            $(newMessage).appendTo(containers.QUEUE).show('drop', options, 700);
+            $(newMessage).css('display', 'none');
+            $(newMessage).appendTo(containers.QUEUE);
+            $(newMessage).show('drop', options, 400);
+            console.log(`Sender: ${sender} | Previous: ${self.previous_sender}`);
             if (sender === self.previous_sender) {
-                $(newMessage).css('margin-top', '5px');
+                setTimeout(() => {
+                    $(newMessage).animate({marginTop: '5px'}, 200);
+                }, 500);
             }
             $('#gaspar_preview_container').find('.preview_text').empty().text(text);
             if (sender === 'user') {
@@ -143,6 +146,7 @@ jQuery(document).ready(function ($) {
             let newMessage = document.createElement('div');
             $(newMessage).addClass('button');
             $(newMessage).append(button.label);
+            $(newMessage).css('display', 'none');
             newMessage.addEventListener('click', function () {
                 let regExp = /:\s(\w*)/gi;
                 let buttonLocale = regExp.exec(button.label);
@@ -154,7 +158,13 @@ jQuery(document).ready(function ($) {
                     self.postToAPI('Hello');
                 }
             });
-            $(newMessage).appendTo(containers.QUEUE).show('drop', options, 700);
+            $(newMessage).appendTo(containers.QUEUE);
+            $(newMessage).show('drop', options, 400);
+            if (sender === self.previous_sender) {
+                setTimeout(() => {
+                    $(newMessage).animate({marginTop: '5px'}, 200);
+                }, 500);
+            }
             if (sender === self.previous_sender) {
                 $(newMessage).css('margin-top', '5px');
             }
@@ -167,10 +177,23 @@ jQuery(document).ready(function ($) {
             cards.forEach(function (card) {
                 let imageHolder = card.image || 'img/wines_in_my_wish_list.jpg';
                 let _score = card.overall_wp_score;
-                let foodMatch = card.normalised_foodmatch;
-                let normalizedMatch = foodMatch.toString().slice(0, 3);
+                let foodMatch = card.normalised_foodmatch || null;
+                let normalizedMatch = '';
+                if (foodMatch) {
+                    normalizedMatch = foodMatch.toString().slice(0, 3);
+                } else {
+                    normalizedMatch = 'null';
+                }
                 let score = _score.toString().slice(0, 3);
-                let colorIMG = 'img/' + card.wine_type_name + '.png';
+                let bottleSize = '';
+                if (card.price_koeff >= 0.375 && card.price_koeff <= 0.5) {
+                    bottleSize = '1_2 bottle';
+                } else if (card.price_koeff > 0.5 && card.price_koeff <= 1) {
+                    bottleSize = 'bottle';
+                } else if (card.price_koeff > 1) {
+                    bottleSize = 'big bottle';
+                }
+                let colorIMG = 'img/' + card.wine_type_name + '/' + bottleSize + '.png';
                 let ratingColor = '';
                 let scoreColor = '';
                 if (card.overall_rating > 60 && card.overall_rating <= 65) {
@@ -316,18 +339,6 @@ jQuery(document).ready(function ($) {
                 expires: -1
             });
         },
-        getWineFromApi: function () {
-            let self = this;
-            let myInit = {
-                method: 'GET'
-            };
-            let request = new Request('http://ec2-52-30-218-137.eu-west-1.compute.amazonaws.com/top_wine/places/1333/filter?max_price=75', myInit);
-            fetch(request).then(function (response) {
-                return response.json();
-            }).then(function (jsonResponse) {
-                console.log(jsonResponse.output);
-            });
-        },
         postToAPI: function (value, exit_case) {
             exit_case = exit_case || false;
             let myInit = {
@@ -335,7 +346,6 @@ jQuery(document).ready(function ($) {
             };
             let self = this;
             console.log('Value = ' + value);
-            // let request = new Request('http://127.0.0.1:1880/hello-param/Test');
             let request = new Request('http://localhost:1880/watson/' + self.user_id + '/' + self.place + '/?value=' + value + '&lang=' + self.lang + '&food=' + self.findFood, myInit);
             fetch(request).then(function (response) {
                 return response.json();
@@ -345,136 +355,97 @@ jQuery(document).ready(function ($) {
                     switch (jsonResponse.type) {
                         case 'dishes':
                             self.foodList = jsonResponse.data;
-                            setTimeout(() => {
-                                $('#message_queue').animate({paddingBottom: '60px'}, 700);
-                                self.scrollQuery(200);
-                                $('#waves_message').show('drop', {'direction': 'left'}, 300);
-                                setTimeout(() => {
-                                    $('.filter_options').empty();
-                                    $('.filter_input_changeable').empty();
-                                    jsonResponse.data.forEach(function (dish) {
-                                        $('.filter').find('.filter_options').append('<div class="filter_option">' + dish + '</div>');
+                            $('.filter_options').empty();
+                            $('.filter_input_changeable').empty();
+                            jsonResponse.data.forEach(function (dish) {
+                                $('.filter').find('.filter_options').append('<div class="filter_option">' + dish + '</div>');
+                            });
+                            console.log(self.foodList.length);
+                            jsonResponse.text.forEach(function (step) {
+                                if (step.response_type === 'text') {
+                                    self.messageQueue.push({value: step.text, sender: 'gaspar', type: 'text'});
+                                } else if (step.response_type === 'option') {
+                                    self.messageQueue.push({value: step.title, sender: 'gaspar', type: 'text'});
+                                    step.options.forEach(function (option) {
+                                        self.messageQueue.push({value: option, sender: 'gaspar', type: 'button'});
                                     });
-                                    $('#message_queue').animate({paddingBottom: '60px'}, 700);
-                                    $('.filter').show('drop', {direction: 'right'}, 700);
-                                    console.log(self.foodList.length);
-                                    $('#waves_message').hide('drop', {'direction': 'left'}, 300);
-                                    jsonResponse.text.forEach(function (step) {
-                                        if (step.response_type === 'text') {
-                                            self.addMessage(step.text, 'gaspar', 'text');
-                                        } else if (step.response_type === 'option') {
-                                            self.addMessage(step.title, 'gaspar', 'text');
-                                            step.options.forEach(function (option) {
-                                                self.addMessage(option, 'gaspar', 'button');
-                                            });
-                                        }
-                                    });
-                                    $('.filter_input_changeable').keydown(function (e) {
-                                        e.keyCode === 13 ? (e.preventDefault(), self.inputSended($('.filter_input_changeable').text())) : null;
-                                    });
-                                    $('.filter_input_changeable').on('input', () => {
-                                        let filteredFood = self.foodList.filter(function (element) {
-                                            let ignoreCase = element.toLowerCase();
-                                            let text = $('.filter_input_changeable').text().toLowerCase();
-                                            return element.includes(text);
-                                            // return element.includes($('.filter_input_changeable').text());
-                                        });
-                                        $('.filter').find('.filter_options').empty();
-                                        filteredFood.forEach((food) => {
-                                            $('.filter').find('.filter_options').append('<div class="filter_option">' + food + '</div>');
-                                        });
-                                        $('.filter_option').on('click', function () {
-                                            self.findFood = true;
-                                            $('.filter').hide('drop', {direction: 'right'}, 700);
-                                            self.addMessage($(this).text(), 'user', 'text');
-                                            $('#message_queue').animate({paddingBottom: '8px'}, 700);
-                                        });
-                                    });
-                                    $('.filter_option').on('click', function () {
-                                        $('.filter').hide('drop', {direction: 'right'}, 700);
-                                        self.findFood = true;
-                                        self.addMessage($(this).text(), 'user', 'text');
-                                        $('#message_queue').animate({paddingBottom: '8px'}, 700);
-                                    });
-                                }, self.type_timer);
-                            }, self.pause_timer);
+                                }
+                            });
+                            self.flushQueue(self.messageQueue);
+                            $('.filter_input_changeable').keydown(function (e) {
+                                e.keyCode === 13 ? (e.preventDefault(), self.inputSended($('.filter_input_changeable').text())) : null;
+                            });
+                            $('.filter_input_changeable').on('input', () => {
+                                let filteredFood = self.foodList.filter(function (element) {
+                                    let ignoreCase = element.toLowerCase();
+                                    let text = $('.filter_input_changeable').text().toLowerCase();
+                                    return element.includes(text);
+                                    // return element.includes($('.filter_input_changeable').text());
+                                });
+                                $('.filter').find('.filter_options').empty();
+                                filteredFood.forEach((food) => {
+                                    $('.filter').find('.filter_options').append('<div class="filter_option">' + food + '</div>');
+                                });
+                                $('.filter_option').on('click', function () {
+                                    self.findFood = true;
+                                    $('.filter').hide('drop', {direction: 'right'}, 700);
+                                    self.addMessage($(this).text(), 'user', 'text');
+                                    $('#message_queue').animate({paddingBottom: '8px'}, 700);
+                                });
+                            });
+                            $('.filter_option').on('click', function () {
+                                $('.filter').hide('drop', {direction: 'right'}, 700);
+                                self.findFood = true;
+                                self.addMessage($(this).text(), 'user', 'text');
+                                $('#message_queue').animate({paddingBottom: '8px'}, 700);
+                            });
                             break;
                         case 'wines':
                             console.log(self.wineList.length);
-                            setTimeout(() => {
-                                $('#message_queue').animate({paddingBottom: '60px'}, 700);
-                                self.scrollQuery(200);
-                                $('#waves_message').show('drop', {'direction': 'left'}, 300);
-                                setTimeout(() => {
-                                    $('#message_queue').animate({paddingBottom: '8px'}, 700);
-                                    $('#waves_message').hide('drop', {'direction': 'left'}, 300);
-                                    jsonResponse.text.forEach(function (step) {
-                                        if (step.response_type === 'text') {
-                                            self.addMessage(step.text, 'gaspar', 'text');
-                                        } else if (step.response_type === 'option') {
-                                            self.addMessage(step.title, 'gaspar', 'text');
-                                            step.options.forEach(function (option) {
-                                                self.addMessage(option, 'gaspar', 'button');
-                                            });
-                                        }
-                                        self.postToAPI('Exit', true);
+                            jsonResponse.text.forEach(function (step) {
+                                if (step.response_type === 'text') {
+                                    self.messageQueue.push({value: step.text, sender: 'gaspar', type: 'text'});
+                                } else if (step.response_type === 'option') {
+                                    self.messageQueue.push({value: step.title, sender: 'gaspar', type: 'text'});
+                                    step.options.forEach(function (option) {
+                                        self.messageQueue.push({value: option, sender: 'gaspar', type: 'button'});
                                     });
-                                    self.addMessage(jsonResponse.message, 'gaspar', 'text');
-                                    setTimeout(function () {
-                                        self.addCarousel(jsonResponse.data);
-                                    }, 700);
-                                    self.postToAPI('Exit', true);
-                                }, self.type_timer);
-                            }, self.pause_timer);
+                                }
+                            });
+                            self.messageQueue.push({value: jsonResponse.message, sender: 'gaspar', type: 'text'});
+                            self.messageQueue.push({value: jsonResponse.data, sender: 'gaspar', type: 'carousel'});
+                            self.flushQueue(self.messageQueue);
+                            self.postToAPI('Exit', true);
                             break;
                         case 'pairing':
-                            setTimeout(() => {
-                                $('#message_queue').animate({paddingBottom: '60px'}, 700);
-                                self.scrollQuery(200);
-                                $('#waves_message').show('drop', {'direction': 'left'}, 300);
-                                setTimeout(() => {
-                                    $('#message_queue').animate({paddingBottom: '8px'}, 700);
-                                    $('#waves_message').hide('drop', {'direction': 'left'}, 300);
-                                    jsonResponse.text.forEach(function (step) {
-                                        if (step.response_type === 'text') {
-                                            self.addMessage(step.text, 'gaspar', 'text');
-                                        } else if (step.response_type === 'option') {
-                                            self.addMessage(step.title, 'gaspar', 'text');
-                                            step.options.forEach(function (option) {
-                                                self.addMessage(option, 'gaspar', 'button');
-                                            });
-                                        }
-                                        self.postToAPI('Exit', true);
+                            jsonResponse.text.forEach(function (step) {
+                                if (step.response_type === 'text') {
+                                    self.messageQueue.push({value: step.text, sender: 'gaspar', type: 'text'});
+                                } else if (step.response_type === 'option') {
+                                    self.messageQueue.push({value: step.title, sender: 'gaspar', type: 'text'});
+                                    step.options.forEach(function (option) {
+                                        self.messageQueue.push({value: option, sender: 'gaspar', type: 'button'});
                                     });
-                                    self.addMessage(jsonResponse.message, 'gaspar', 'text');
-                                    self.wineList = jsonResponse.data;
-                                    setTimeout(function () {
-                                        self.addCarousel(jsonResponse.data);
-                                    }, 700);
-                                    self.postToAPI('Exit', true);
-                                }, self.type_timer);
-                            }, self.pause_timer);
+                                }
+                            });
+                            self.messageQueue.push({value: jsonResponse.message, sender: 'gaspar', type: 'text'});
+                            self.wineList = jsonResponse.data;
+                            self.messageQueue.push({value: jsonResponse.data, sender: 'gaspar', type: 'carousel'});
+                            self.flushQueue(self.messageQueue);
+                            self.postToAPI('Exit', true);
                             break;
                         case 'other':
-                            setTimeout(() => {
-                                $('#message_queue').animate({paddingBottom: '60px'}, 700);
-                                self.scrollQuery(200);
-                                $('#waves_message').show('drop', {'direction': 'left'}, 300);
-                                setTimeout(() => {
-                                    $('#message_queue').animate({paddingBottom: '8px'}, 700);
-                                    $('#waves_message').hide('drop', {'direction': 'left'}, 300);
-                                    jsonResponse.response.forEach(function (step) {
-                                        if (step.response_type === 'text') {
-                                            self.addMessage(step.text, 'gaspar', 'text');
-                                        } else if (step.response_type === 'option') {
-                                            self.addMessage(step.title, 'gaspar', 'text');
-                                            step.options.forEach(function (option) {
-                                                self.addMessage(option, 'gaspar', 'button');
-                                            });
-                                        }
+                            jsonResponse.response.forEach(function (step) {
+                                if (step.response_type === 'text') {
+                                    self.messageQueue.push({value: step.text, sender: 'gaspar', type: 'text'});
+                                } else if (step.response_type === 'option') {
+                                    self.messageQueue.push({value: step.title, sender: 'gaspar', type: 'text'});
+                                    step.options.forEach(function (option) {
+                                        self.messageQueue.push({value: option, sender: 'gaspar', type: 'button'});
                                     });
-                                }, self.type_timer);
-                            }, self.pause_timer);
+                                }
+                            });
+                            self.flushQueue(self.messageQueue);
                             break;
                     }
                 }
@@ -484,7 +455,11 @@ jQuery(document).ready(function ($) {
             let self = this;
             let myInit = {
                 method: 'POST',
-                headers: {apikey: 'butnDp7kFuTJbowyZM7q0juchgLBc2jmbl25ZfUS_jPW', 'Content-Type': 'application/json', 'Access-Control-Request-Headers': 'apikey'},
+                headers: {
+                    apikey: 'butnDp7kFuTJbowyZM7q0juchgLBc2jmbl25ZfUS_jPW',
+                    'Content-Type': 'application/json',
+                    'Access-Control-Request-Headers': 'apikey'
+                },
                 data: {
                     text: message,
                     source: self.lang,
@@ -504,6 +479,23 @@ jQuery(document).ready(function ($) {
                 $(containers.PREVIEW_CONTAINER).show('drop', {direction: 'down'}, 600);
             }, 10000);
             clearTimeout(self.previewTimer);
+        },
+        flushQueue: function (currentQueue) {
+            let self = this;
+            if (currentQueue.length > 0) {
+                let currentElement = currentQueue.shift();
+                setTimeout(() => {
+                    $('#message_queue').animate({paddingBottom: '60px'}, 200);
+                    self.scrollQuery(400);
+                    $('#waves_message').show('drop', {'direction': 'left'}, 800);
+                    setTimeout(() => {
+                        $('#message_queue').animate({paddingBottom: '8px'}, 400);
+                        $('#waves_message').hide('drop', {'direction': 'left'}, 300);
+                        self.addMessage(currentElement.value, currentElement.sender, currentElement.type);
+                        self.flushQueue(currentQueue);
+                    }, self.type_timer);
+                }, self.pause_timer);
+            }
         },
         scrollQuery: function (timeout) {
             $(containers.QUEUE).animate({scrollTop: $(containers.QUEUE)[0].scrollHeight}, timeout);

@@ -107,7 +107,6 @@ body {
     width: 100%;
     background: white;
     padding: 0 14px 0 0;
-    margin-bottom: 2px;
     box-sizing: border-box;
     border-bottom: 2px solid #F4F4F4;
 }
@@ -597,6 +596,7 @@ body {
 #gaspar_container #gaspar_bottom #bottom_text #orange_text {
     font-weight: 500;
     color: #f1824a;
+    text-decoration: none;
 }
 
 
