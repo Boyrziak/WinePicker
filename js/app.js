@@ -376,6 +376,10 @@ jQuery(document).ready(function ($) {
                                 }
                             });
                             self.flushQueue(self.messageQueue);
+                            setTimeout(()=>{
+                                $('#message_queue').animate({paddingBottom: '60px'}, 200);
+                                $('.filter').show('drop', {direction: 'right'}, 600);
+                            }, self.type_timer + 1000);
                             $('.filter_input_changeable').keydown(function (e) {
                                 e.keyCode === 13 ? (e.preventDefault(), self.inputSended($('.filter_input_changeable').text())) : null;
                             });
