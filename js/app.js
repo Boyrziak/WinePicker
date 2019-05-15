@@ -38,6 +38,10 @@ jQuery(document).ready(function ($) {
             this.send.on('click', function () {
                 self.inputSended();
             });
+            this.input.on('input', function () {
+                console.log(self.input.outerHeight());
+                $('#gaspar_bottom').outerHeight(60 + $('#gaspar_input').outerHeight());
+            });
             let new_id = self.getRandomId(1000, 9999);
             console.log(`ID: ${new_id}`);
             let cookie = self.getCookie('user_id');
