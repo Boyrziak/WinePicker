@@ -323,6 +323,7 @@ body {
     border-radius: 7px 7px 0 0;
     position: relative;
     height: 145px;
+    text-transform: capitalize;
 }
 
 #gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_header_name {

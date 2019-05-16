@@ -226,6 +226,13 @@ jQuery(document).ready(function ($) {
                 let foodMatch = card.normalised_foodmatch || null;
                 let normalizedMatch = '';
                 let notes = card.wm_notes.slice(0, 80);
+                let notesMore = '';
+                if (card.wm_notes.length > 0) {
+                    notesMore = 'Read More'
+                }
+                if (card.wine_subtype_name.length > 0) {
+                    card.wine_subtype_name = ', ' + card.wine_subtype_name;
+                }
                 if (foodMatch) {
                     normalizedMatch = foodMatch.toString().slice(0, 3);
                 } else {
@@ -299,7 +306,7 @@ jQuery(document).ready(function ($) {
                 $(carousel).append(`<div class="wine_card">
                                         <div class="wine_card_header">
                                             <div class="wine_header_name">
-                                                ` + card.wine_name + ` ` + card.wine_subtype_name + `
+                                                ` + card.wine_name + `` + card.wine_subtype_name + `
                                             </div>
                                             <div class="wine_header_origin">
                                                 ` + card.wine_year + ` ` + card.area_name + `
@@ -335,9 +342,9 @@ jQuery(document).ready(function ($) {
                                             </div>
                                         </div>
                                         <div class="wine_card_description">
-                                            <span class="wine_description_name">` + card.wine_subtype_name + `</span>
+                                            <span class="wine_description_name">` + card.main_view_grape + `</span>
                                             <p class="wine_description_text first_text">
-                                                ` + notes + `<span class="notes_read_more">Read more</span>
+                                                ` + notes + `<span class="notes_read_more">` + notesMore + `</span>
                                             </p>
                                             <p class="wine_description_text second_text">
                                                 ` + card.wm_notes + `
