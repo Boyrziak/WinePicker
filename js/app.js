@@ -336,19 +336,14 @@ jQuery(document).ready(function ($) {
                                         </div>
                                         <div class="wine_card_description">
                                             <span class="wine_description_name">` + card.wine_subtype_name + `</span>
-                                            <p class="wine_description_text">
+                                            <p class="wine_description_text first_text">
                                                 ` + notes + `<span class="notes_read_more">Read more</span>
+                                            </p>
+                                            <p class="wine_description_text second_text">
+                                                ` + card.wm_notes + `
                                             </p>
                                         </div>
                                     </div>`);
-                setTimeout(()=>{
-                    $('.notes_read_more').on('click', () => {
-                        $(card).parent().animate({height: '324px'}, 400);
-                        $('.wine_card').animate({marginTop: '154px'}, 500);
-                        $(this).animate({height: '324px', marginTop: '77px'}, 700);
-                        $(this).find('.wine_description_text').text(card.wm_notes);
-                    });
-                },1000);
             });
             let leftButton = document.createElement('div');
             $(leftButton).addClass('carousel_button left_carousel_button');
@@ -370,6 +365,13 @@ jQuery(document).ready(function ($) {
             $(carouselWrap).append(rightButton);
             $(carouselWrap).append(carousel);
             $('#message_queue').append(carouselWrap);
+            $('.notes_read_more').on('click', function () {
+                $(this).parent().parent().parent().parent().animate({height: '324px'}, 400);
+                $('.wine_card').animate({marginTop: '154px'}, 500);
+                $(this).parent().parent().parent().animate({height: '324px', marginTop: '77px'}, 700);
+                $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'none');
+                $(this).parent().parent().parent().find('.wine_description_text.second_text').css('display', 'block');
+            });
         },
         setCookie: function (name, value, options) {
             options = options || {};
@@ -456,7 +458,7 @@ jQuery(document).ready(function ($) {
                                 let filteredFood = self.foodList.filter(function (element) {
                                     let ignoreCase = element.toLowerCase();
                                     let text = $('.filter_input_changeable').text().toLowerCase();
-                                    return element.includes(text);
+                                    return ignoreCase.includes(text);
                                     // return element.includes($('.filter_input_changeable').text());
                                 });
                                 $('.filter').find('.filter_options').empty();

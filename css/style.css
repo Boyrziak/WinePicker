@@ -267,7 +267,7 @@ body {
     display: flex;
     flex-direction: row;
     overflow-x: scroll;
-    overflow-y: visible;
+    overflow-y: hidden;
     width: 250px;
     height: 250px;
     min-height: 250px;
@@ -448,6 +448,10 @@ body {
     line-height: 14px;
     color: #222222;
     margin-top: 4px;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description .wine_description_text.second_text {
+    display: none;
 }
 
 #gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description .wine_description_text .notes_read_more{
