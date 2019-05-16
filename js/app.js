@@ -225,6 +225,7 @@ jQuery(document).ready(function ($) {
                 let _score = card.overall_wp_score;
                 let foodMatch = card.normalised_foodmatch || null;
                 let normalizedMatch = '';
+                let notes = card.wm_notes.slice(0, 80);
                 if (foodMatch) {
                     normalizedMatch = foodMatch.toString().slice(0, 3);
                 } else {
@@ -336,10 +337,18 @@ jQuery(document).ready(function ($) {
                                         <div class="wine_card_description">
                                             <span class="wine_description_name">` + card.wine_subtype_name + `</span>
                                             <p class="wine_description_text">
-                                                ` + card.wm_notes + `
+                                                ` + notes + `<span class="notes_read_more">Read more</span>
                                             </p>
                                         </div>
                                     </div>`);
+                setTimeout(()=>{
+                    $('.notes_read_more').on('click', () => {
+                        $(card).parent().animate({height: '324px'}, 400);
+                        $('.wine_card').animate({marginTop: '154px'}, 500);
+                        $(this).animate({height: '324px', marginTop: '77px'}, 700);
+                        $(this).find('.wine_description_text').text(card.wm_notes);
+                    });
+                },1000);
             });
             let leftButton = document.createElement('div');
             $(leftButton).addClass('carousel_button left_carousel_button');

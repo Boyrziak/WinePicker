@@ -322,7 +322,7 @@ body {
     text-align: center;
     border-radius: 7px 7px 0 0;
     position: relative;
-    min-height: 175px;
+    height: 145px;
 }
 
 #gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_header_name {
@@ -340,7 +340,6 @@ body {
     font-size: 12px;
     line-height: 14px;
     margin-bottom: 4px;
-    height: 30px;
 }
 
 #gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_images {
@@ -357,7 +356,6 @@ body {
 
 #gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_images .wine_image {
     margin-right: 4px;
-    margin-bottom: 16px;
 }
 
 #gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_images .wine_image img{
@@ -449,6 +447,13 @@ body {
     font-size: 12px;
     line-height: 14px;
     color: #222222;
+    margin-top: 4px;
+}
+
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description .wine_description_text .notes_read_more{
+    color: #f1824a;
+    font-style: italic;
+    cursor: pointer;
 }
 
 #gaspar_container #gaspar_body #message_queue #waves_message {
