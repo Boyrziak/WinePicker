@@ -58,7 +58,7 @@ jQuery(document).ready(function ($) {
             // // self.postToAPI('Hello');
             // this.addMessage([{name: 'Bodega Colome,Estate'}, {name: 'Bodega Colome,Estate'}, {name: 'Bodega Colome,Estate'}], 'gaspar', 'carousel');
             self.postToAPI('Hello');
-            self.translateMessage('Hello');
+            // self.translateMessage('Hello');
         },
         getRandomId: function (min, max) {
             return Math.floor(Math.random() * (max - min)) + min;
@@ -68,7 +68,7 @@ jQuery(document).ready(function ($) {
             let body = $(containers.CONTAINER);
             let preview = $(containers.PREVIEW_CONTAINER);
             if (!self.opened) {
-                preview.hide('drop', {direction: 'down'}, 600);
+                $(containers.PREVIEW_CONTAINER).hide('drop', {direction: 'down'}, 600);
                 clearTimeout(self.previewTimer);
                 $(containers.BUTTON).hide('scale', {percent: 0, direction: 'horizontal'}, 600, function () {
                     $(containers.OPEN_ICON).css('display', 'none');
@@ -125,11 +125,26 @@ jQuery(document).ready(function ($) {
             let self = this;
             let newMessage = document.createElement('div');
             $(newMessage).addClass('message ' + sender + '_message');
-            $(newMessage).append(text);
             $(newMessage).css('display', 'none');
-            $(newMessage).appendTo(containers.QUEUE);
-            $(newMessage).show('drop', options, 400);
-            console.log(`Sender: ${sender} | Previous: ${self.previous_sender}`);
+            if (self.lang !== 'en') {
+                let myInit = {
+                    method: 'GET'
+                };
+                let request = new Request('http://localhost:1880/translation/?value=' + text + '&lang=' + self.lang, myInit);
+                fetch(request).then(function (response) {
+                    return response.json();
+                }).then(function (jsonResponse) {
+                    let translated = jsonResponse.response.translations[0].translation;
+                    $(newMessage).append(translated);
+                    $(newMessage).appendTo(containers.QUEUE);
+                    $(newMessage).show('drop', options, 400);
+                });
+            } else {
+                $(newMessage).addClass('message ' + sender + '_message');
+                $(newMessage).append(text);
+                $(newMessage).appendTo(containers.QUEUE);
+                $(newMessage).show('drop', options, 400);
+            }
             if (sender === self.previous_sender) {
                 setTimeout(() => {
                     $(newMessage).animate({marginTop: '5px'}, 200);
@@ -149,21 +164,48 @@ jQuery(document).ready(function ($) {
             let self = this;
             let newMessage = document.createElement('div');
             $(newMessage).addClass('button');
-            $(newMessage).append(button.label);
-            $(newMessage).css('display', 'none');
-            newMessage.addEventListener('click', function () {
-                let regExp = /:\s(\w*)/gi;
-                let buttonLocale = regExp.exec(button.label);
-                if (!buttonLocale) {
-                    self.addMessage(button.label, 'user', 'text');
-                } else {
-                    console.log(buttonLocale);
-                    self.lang = buttonLocale[1];
-                    self.postToAPI('Hello');
-                }
-            });
-            $(newMessage).appendTo(containers.QUEUE);
-            $(newMessage).show('drop', options, 400);
+            if (self.lang !== 'en') {
+                let myInit = {
+                    method: 'GET'
+                };
+                let request = new Request('http://localhost:1880/translation/?value=' + button.label + '&lang=' + self.lang, myInit);
+                fetch(request).then(function (response) {
+                    return response.json();
+                }).then(function (jsonResponse) {
+                    button.label = jsonResponse.response.translations[0].translation;
+                    $(newMessage).append(button.label);
+                    $(newMessage).css('display', 'none');
+                    newMessage.addEventListener('click', function () {
+                        let regExp = /:\s(\w*)/gi;
+                        let buttonLocale = regExp.exec(button.label);
+                        if (!buttonLocale) {
+                            self.addMessage(button.label, 'user', 'text');
+                        } else {
+                            console.log(buttonLocale);
+                            self.lang = buttonLocale[1];
+                            self.postToAPI('Hello');
+                        }
+                    });
+                    $(newMessage).appendTo(containers.QUEUE);
+                    $(newMessage).show('drop', options, 400);
+                });
+            } else {
+                $(newMessage).append(button.label);
+                $(newMessage).css('display', 'none');
+                newMessage.addEventListener('click', function () {
+                    let regExp = /:\s(\w*)/gi;
+                    let buttonLocale = regExp.exec(button.label);
+                    if (!buttonLocale) {
+                        self.addMessage(button.label, 'user', 'text');
+                    } else {
+                        console.log(buttonLocale);
+                        self.lang = buttonLocale[1];
+                        self.postToAPI('Hello');
+                    }
+                });
+                $(newMessage).appendTo(containers.QUEUE);
+                $(newMessage).show('drop', options, 400);
+            }
             if (sender === self.previous_sender) {
                 setTimeout(() => {
                     $(newMessage).animate({marginTop: '5px'}, 200);
@@ -192,14 +234,15 @@ jQuery(document).ready(function ($) {
                 let bottleSize = '';
                 if (card.price_koeff >= 0.375 && card.price_koeff <= 0.5) {
                     bottleSize = '1_2 bottle';
-                } else if (card.price_koeff > 0.5 && card.price_koeff <= 1) {
+                } else if (card.price_koeff > 0.5 && card.price_koeff <= 1.0) {
                     bottleSize = 'bottle';
-                } else if (card.price_koeff > 1) {
+                } else if (card.price_koeff > 1.0) {
                     bottleSize = 'big bottle';
                 }
                 let colorIMG = 'img/' + card.wine_type_name + '/' + bottleSize + '.png';
                 let ratingColor = '';
                 let scoreColor = '';
+                let matchColor = '';
                 if (card.overall_rating > 60 && card.overall_rating <= 65) {
                     ratingColor = '#ca2d26';
                 } else if (card.overall_rating > 65 && card.overall_rating <= 70) {
@@ -216,6 +259,23 @@ jQuery(document).ready(function ($) {
                     ratingColor = '#75c042';
                 } else if (card.overall_rating > 95) {
                     ratingColor = '#3ab764';
+                }
+                if (normalizedMatch > 2 && normalizedMatch <= 3) {
+                    matchColor = '#ca2d26';
+                } else if (normalizedMatch > 3 && normalizedMatch <= 4) {
+                    matchColor = '#de5a25';
+                } else if (normalizedMatch > 4 && normalizedMatch <= 5) {
+                    matchColor = '#f47220';
+                } else if (normalizedMatch > 5 && normalizedMatch <= 6) {
+                    matchColor = '#f8b316';
+                } else if (normalizedMatch > 6 && normalizedMatch <= 7) {
+                    matchColor = '#d4da22';
+                } else if (normalizedMatch > 7 && normalizedMatch <= 8) {
+                    matchColor = '#abd036';
+                } else if (normalizedMatch > 8 && normalizedMatch <= 9) {
+                    matchColor = '#75c042';
+                } else if (normalizedMatch > 9 && normalizedMatch <= 10) {
+                    matchColor = '#3ab764';
                 }
                 if (score > 2 && score <= 3) {
                     scoreColor = '#ca2d26';
@@ -260,7 +320,7 @@ jQuery(document).ready(function ($) {
                                                     <span class="property_name">price</span>
                                                 </div>
                                                 <div class="wine_property">
-                                                    <span class="property_number">` + normalizedMatch + `</span>
+                                                    <span class="property_number" style="background: ${matchColor}">` + normalizedMatch + `</span>
                                                     <span class="property_name">food match</span>
                                                 </div>
                                                 <div class="wine_property">
@@ -376,7 +436,7 @@ jQuery(document).ready(function ($) {
                                 }
                             });
                             self.flushQueue(self.messageQueue);
-                            setTimeout(()=>{
+                            setTimeout(() => {
                                 $('#message_queue').animate({paddingBottom: '60px'}, 200);
                                 $('.filter').show('drop', {direction: 'right'}, 600);
                             }, self.type_timer + 1000);
@@ -458,28 +518,6 @@ jQuery(document).ready(function ($) {
                     }
                 }
             });
-        },
-        translateMessage: function (message) {
-            let self = this;
-            let myInit = {
-                method: 'POST',
-                headers: {
-                    apikey: 'butnDp7kFuTJbowyZM7q0juchgLBc2jmbl25ZfUS_jPW',
-                    'Content-Type': 'application/json',
-                    'Access-Control-Request-Headers': 'apikey'
-                },
-                data: {
-                    text: message,
-                    source: self.lang,
-                    target: 'en'
-                }
-            };
-            let request = new Request('https://gateway.watsonplatform.net/language-translator/api/v3/translate?version=2018-05-01', myInit);
-            fetch(request).then((response) => {
-                console.log(response);
-            });
-            // let translation = text;
-            // return translation;
         },
         showPreview: function (text) {
             let self = this;
