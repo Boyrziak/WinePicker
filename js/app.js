@@ -23,7 +23,8 @@ jQuery(document).ready(function ($) {
         place: 1333,
         lang: 'en',
         user_id: 0,
-        findFood: false,
+        wines: false,
+        pairing: false,
         pause_timer: 700,
         type_timer: 1500,
         wineMessage: '',
@@ -373,7 +374,7 @@ jQuery(document).ready(function ($) {
             $(carouselWrap).append(carousel);
             $('#message_queue').append(carouselWrap);
             $('.notes_read_more').on('click', function () {
-                $(this).parent().parent().parent().parent().animate({height: '324px'}, 400);
+                $(this).parent().parent().parent().parent().animate({height: '324px', marginTop: '5px'}, 400);
                 $('.wine_card').animate({marginTop: '77px'}, 500);
                 $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
                 $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'none');
@@ -429,7 +430,7 @@ jQuery(document).ready(function ($) {
             };
             let self = this;
             console.log('Value = ' + value);
-            let request = new Request('http://localhost:1880/watson/' + self.user_id + '/' + self.place + '/?value=' + value + '&lang=' + self.lang + '&food=' + self.findFood, myInit);
+            let request = new Request('http://localhost:1880/watson/' + self.user_id + '/' + self.place + '/?value=' + value + '&lang=' + self.lang + '&wines=' + self.wines + '&pairing=' + self.pairing, myInit);
             fetch(request).then(function (response) {
                 return response.json();
             }).then(function (jsonResponse) {
@@ -471,7 +472,7 @@ jQuery(document).ready(function ($) {
                                 });
                                 $('.filter').find('.filter_options').empty();
                                 filteredFood.forEach((food) => {
-                                    $('.filter').find('.filter_options').append('<div class="filter_option">' + food + '</div>');
+                                    $(' .filter').find('.filter_options').append('<div class="filter_option">' + food + '</div>');
                                 });
                                 $('.filter_option').on('click', function () {
                                     self.findFood = true;
@@ -502,7 +503,8 @@ jQuery(document).ready(function ($) {
                             self.messageQueue.push({value: jsonResponse.message, sender: 'gaspar', type: 'text'});
                             self.messageQueue.push({value: jsonResponse.data, sender: 'gaspar', type: 'carousel'});
                             self.flushQueue(self.messageQueue);
-                            self.postToAPI('Exit', true);
+                            // self.postToAPI('Exit', true);
+                            self.wines = 'false';
                             break;
                         case 'pairing':
                             jsonResponse.text.forEach(function (step) {
@@ -519,7 +521,8 @@ jQuery(document).ready(function ($) {
                             self.wineList = jsonResponse.data;
                             self.messageQueue.push({value: jsonResponse.data, sender: 'gaspar', type: 'carousel'});
                             self.flushQueue(self.messageQueue);
-                            self.postToAPI('Exit', true);
+                            // self.postToAPI('Exit', true);
+                            self.pairing = 'false';
                             break;
                         case 'other':
                             jsonResponse.response.forEach(function (step) {
