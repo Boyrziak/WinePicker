@@ -348,7 +348,7 @@ jQuery(document).ready(function ($) {
                                                 ` + notes + `<span class="notes_read_more">` + notesMore + `</span>
                                             </p>
                                             <p class="wine_description_text second_text">
-                                                ` + card.wm_notes + `
+                                                ` + card.wm_notes + `<span class="notes_read_less">Read Less</span>
                                             </p>
                                         </div>
                                     </div>`);
@@ -379,6 +379,14 @@ jQuery(document).ready(function ($) {
                 $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
                 $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'none');
                 $(this).parent().parent().parent().find('.wine_description_text.second_text').css('display', 'block');
+                self.scrollQuery(400);
+            });
+            $('.notes_read_less').on('click', function () {
+                $(this).parent().parent().parent().parent().animate({height: '250', marginTop: '5px'}, 400);
+                $('.wine_card').animate({marginTop: '0'}, 500);
+                $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
+                $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'block');
+                $(this).parent().parent().parent().find('.wine_description_text.second_text').css('display', 'none');
                 self.scrollQuery(400);
             });
         },

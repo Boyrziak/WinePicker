@@ -461,6 +461,12 @@ body {
     cursor: pointer;
 }
 
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description .wine_description_text .notes_read_less{
+    color: #f1824a;
+    font-style: italic;
+    cursor: pointer;
+}
+
 #gaspar_container #gaspar_body #message_queue #waves_message {
     display: none;
     position: absolute;
