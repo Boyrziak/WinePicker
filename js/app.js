@@ -374,10 +374,11 @@ jQuery(document).ready(function ($) {
             $('#message_queue').append(carouselWrap);
             $('.notes_read_more').on('click', function () {
                 $(this).parent().parent().parent().parent().animate({height: '324px'}, 400);
-                $('.wine_card').animate({marginTop: '154px'}, 500);
-                $(this).parent().parent().parent().animate({height: '324px', marginTop: '77px'}, 700);
+                $('.wine_card').animate({marginTop: '77px'}, 500);
+                $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
                 $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'none');
                 $(this).parent().parent().parent().find('.wine_description_text.second_text').css('display', 'block');
+                self.scrollQuery(400);
             });
         },
         setCookie: function (name, value, options) {
