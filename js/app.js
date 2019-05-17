@@ -504,7 +504,8 @@ jQuery(document).ready(function ($) {
                             self.messageQueue.push({value: jsonResponse.data, sender: 'gaspar', type: 'carousel'});
                             self.flushQueue(self.messageQueue);
                             // self.postToAPI('Exit', true);
-                            self.wines = 'false';
+                            self.wines = 'true';
+                            self.pairing = 'false';
                             break;
                         case 'pairing':
                             jsonResponse.text.forEach(function (step) {
@@ -522,7 +523,8 @@ jQuery(document).ready(function ($) {
                             self.messageQueue.push({value: jsonResponse.data, sender: 'gaspar', type: 'carousel'});
                             self.flushQueue(self.messageQueue);
                             // self.postToAPI('Exit', true);
-                            self.pairing = 'false';
+                            self.pairing = 'true';
+                            self.wines = 'false';
                             break;
                         case 'other':
                             jsonResponse.response.forEach(function (step) {
