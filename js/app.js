@@ -40,7 +40,6 @@ jQuery(document).ready(function ($) {
                 self.inputSended();
             });
             this.input.on('input', function () {
-                console.log(self.input.outerHeight());
                 $('#gaspar_bottom').outerHeight(60 + $('#gaspar_input').outerHeight());
             });
             let new_id = self.getRandomId(1000, 9999);
@@ -51,15 +50,7 @@ jQuery(document).ready(function ($) {
             }
             self.user_id = cookie;
             console.log(`Cookie: ${cookie}`);
-            // this.addMessage('Hello! My name is Gaspar, I will be your sommelier today.', 'gaspar', 'text');
-            // this.addMessage('How can I help you today?', 'gaspar', 'text');
-            // this.addMessage({label: 'Find wine for my meal'}, 'gaspar', 'button');
-            // this.addMessage({label: 'Find a bottle of wine'}, 'gaspar', 'button');
-            // preview.show('drop', {direction: 'down'}, 600);
-            // // self.postToAPI('Hello');
-            // this.addMessage([{name: 'Bodega Colome,Estate'}, {name: 'Bodega Colome,Estate'}, {name: 'Bodega Colome,Estate'}], 'gaspar', 'carousel');
             self.postToAPI('Hello');
-            // self.translateMessage('Hello');
         },
         getRandomId: function (min, max) {
             return Math.floor(Math.random() * (max - min)) + min;
@@ -182,7 +173,6 @@ jQuery(document).ready(function ($) {
                         if (!buttonLocale) {
                             self.addMessage(button.label, 'user', 'text');
                         } else {
-                            console.log(buttonLocale);
                             self.lang = buttonLocale[1];
                             self.postToAPI('Hello');
                         }
@@ -199,7 +189,6 @@ jQuery(document).ready(function ($) {
                     if (!buttonLocale) {
                         self.addMessage(button.label, 'user', 'text');
                     } else {
-                        console.log(buttonLocale);
                         self.lang = buttonLocale[1];
                         self.postToAPI('Hello');
                     }
@@ -303,7 +292,6 @@ jQuery(document).ready(function ($) {
                 } else if (score > 9 && score <= 10) {
                     scoreColor = '#3ab764';
                 }
-                console.log(card.wine_type_name);
                 $(carousel).append(`<div class="wine_card">
                                         <div class="wine_card_header">
                                             <div class="wine_header_name">
@@ -437,7 +425,6 @@ jQuery(document).ready(function ($) {
                 method: 'GET'
             };
             let self = this;
-            console.log('Value = ' + value);
             let request = new Request('http://localhost:1880/watson/' + self.user_id + '/' + self.place + '/?value=' + value + '&lang=' + self.lang + '&wines=' + self.wines + '&pairing=' + self.pairing, myInit);
             fetch(request).then(function (response) {
                 return response.json();
@@ -452,7 +439,6 @@ jQuery(document).ready(function ($) {
                             jsonResponse.data.forEach(function (dish) {
                                 $('.filter').find('.filter_options').append('<div class="filter_option">' + dish + '</div>');
                             });
-                            console.log(self.foodList.length);
                             jsonResponse.text.forEach(function (step) {
                                 if (step.response_type === 'text') {
                                     self.messageQueue.push({value: step.text, sender: 'gaspar', type: 'text'});
@@ -497,7 +483,6 @@ jQuery(document).ready(function ($) {
                             });
                             break;
                         case 'wines':
-                            console.log(self.wineList.length);
                             jsonResponse.text.forEach(function (step) {
                                 if (step.response_type === 'text') {
                                     self.messageQueue.push({value: step.text, sender: 'gaspar', type: 'text'});
