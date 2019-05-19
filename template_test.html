@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hardcoded snippet request</title>
+</head>
+<body>
+    <script>
+        fetch("http://localhost:1880/httpTest/1333/1234").then(t=>t.text()).then(t=>{document.getElementsByTagName("body")[0].insertAdjacentHTML("beforeend",t)});
+    </script>
+</body>
+</html>
