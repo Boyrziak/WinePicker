@@ -31,7 +31,7 @@ jQuery(document).ready(function ($) {
         previous_sender: 'gaspar',
         initialize: function () {
             let self = this;
-            this.button.on('click', self.clickButton);
+            $('#gaspar_button').on('click', self.clickButton);
             let preview = $(containers.PREVIEW_CONTAINER);
             this.input.keydown(function (e) {
                 e.keyCode === 13 ? (e.preventDefault(), self.inputSended()) : null;
