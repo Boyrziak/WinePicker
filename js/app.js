@@ -31,17 +31,26 @@ jQuery(document).ready(function ($) {
         previous_sender: 'gaspar',
         initialize: function () {
             let self = this;
-            $('#gaspar_button').on('click', self.clickButton);
-            let preview = $(containers.PREVIEW_CONTAINER);
-            this.input.keydown(function (e) {
+            $('#gaspar_input').keydown(function (e) {
                 e.keyCode === 13 ? (e.preventDefault(), self.inputSended()) : null;
             });
-            this.send.on('click', function () {
+            $('#send_button').on('click', function () {
                 self.inputSended();
             });
-            this.input.on('input', function () {
+            $('#gaspar_input').on('input', function () {
                 $('#gaspar_bottom').outerHeight(60 + $('#gaspar_input').outerHeight());
             });
+            $('#gaspar_button').on('click', self.clickButton);
+            // let preview = $(containers.PREVIEW_CONTAINER);
+            // this.input.keydown(function (e) {
+            //     e.keyCode === 13 ? (e.preventDefault(), self.inputSended()) : null;
+            // });
+            // this.send.on('click', function () {
+            //     self.inputSended();
+            // });
+            // this.input.on('input', function () {
+            //     $('#gaspar_bottom').outerHeight(60 + $('#gaspar_input').outerHeight());
+            // });
             let new_id = self.getRandomId(1000, 9999);
             console.log(`ID: ${new_id}`);
             let cookie = self.getCookie('user_id');
@@ -49,7 +58,7 @@ jQuery(document).ready(function ($) {
                 self.setCookie('user_id', new_id);
             }
             self.user_id = cookie;
-            console.log(`Cookie: ${cookie}`);
+            console.log(`Cookie: ${self.user_id}`);
             self.postToAPI('Hello');
         },
         getRandomId: function (min, max) {

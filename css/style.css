@@ -71,6 +71,7 @@ body {
     position: fixed;
     right: 65px;
     width: 344px;
+    /*max-width: 344px;*/
     bottom: 150px;
     display: none;
     flex-direction: column;
@@ -131,6 +132,7 @@ body {
     margin-top: 12px;
     box-sizing: border-box;
     overflow-wrap: break-word;
+    text-align: left;
 }
 
 #gaspar_container #gaspar_body #message_queue .gaspar_message {
@@ -418,6 +420,7 @@ body {
     margin-top: 35px;
     overflow-y: scroll;
     box-sizing: border-box;
+    text-align: left;
 }
 
 #gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description::-webkit-scrollbar {
@@ -597,7 +600,7 @@ body {
 
 #gaspar_container #gaspar_bottom #bottom_text {
     position: absolute;
-    bottom: -5px;
+    bottom: 2px;
     color: black;
     opacity: 0.5;
     font-family: 'Roboto', sans-serif;
@@ -610,6 +613,25 @@ body {
     font-weight: 500;
     color: #f1824a;
     text-decoration: none;
+}
+
+@media screen and (max-width: 786px){
+     #gaspar_container {
+         /*width: 95%;*/
+         right: 5px;
+         top: 10px;
+         bottom: unset;
+     }
+
+    #gaspar_button {
+        right: 0px;
+        bottom: 10px;
+    }
+
+    #gaspar_preview_container {
+        bottom: 85px;
+        right: 15px;
+    }
 }
 
 
