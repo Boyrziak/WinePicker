@@ -31,16 +31,6 @@ jQuery(document).ready(function ($) {
         previous_sender: 'gaspar',
         initialize: function () {
             let self = this;
-            $('#gaspar_input').keydown(function (e) {
-                e.keyCode === 13 ? (e.preventDefault(), self.inputSended()) : null;
-            });
-            $('#send_button').on('click', function () {
-                self.inputSended();
-            });
-            $('#gaspar_input').on('input', function () {
-                $('#gaspar_bottom').outerHeight(60 + $('#gaspar_input').outerHeight());
-            });
-            $('#gaspar_button').on('click', self.clickButton);
             // let preview = $(containers.PREVIEW_CONTAINER);
             // this.input.keydown(function (e) {
             //     e.keyCode === 13 ? (e.preventDefault(), self.inputSended()) : null;
@@ -51,6 +41,46 @@ jQuery(document).ready(function ($) {
             // this.input.on('input', function () {
             //     $('#gaspar_bottom').outerHeight(60 + $('#gaspar_input').outerHeight());
             // });
+            console.log('Initialize');
+            setTimeout(function () {
+                $('#gaspar_button').on('click', function () {
+                    console.log('Click');
+                    if (!self.opened) {
+                        $('#gaspar_preview_container').hide('drop', {direction: 'down'}, 600);
+                        clearTimeout(self.previewTimer);
+                        $('#gaspar_button').hide('scale', {percent: 0, direction: 'horizontal'}, 600, function () {
+                            $('.open_gaspar').css('display', 'none');
+                            $('#close_gaspar').css('display', 'block');
+                            $('#gaspar_button').show('scale', {percent: 0, direction: 'horizontal'}, 600);
+                        });
+                        $('#gaspar_container').toggle('drop', {direction: 'down'}, 1000, function () {
+                            $('#gaspar_body').css('display', 'flex');
+                        });
+                        self.opened = true;
+                    } else {
+                        $('#gaspar_container').toggle('drop', {direction: 'down'}, 1000);
+                        $('#gaspar_button').hide('scale', {percent: 0, direction: 'horizontal'}, 600, function () {
+                            $('.open_gaspar').css('display', 'block');
+                            $('#close_gaspar').css('display', 'none');
+                            $('#gaspar_button').show('scale', {percent: 0, direction: 'horizontal'}, 600);
+                        });
+                        self.opened = false;
+                        // self.previewTimer = setTimeout(function () {
+                        //     $('#gaspar_preview_container').show('drop', {direction: 'down'}, 600);
+                        // }, 10000);
+                        clearTimeout(self.previewTimer);
+                    }
+                });
+                $('#gaspar_input').keydown(function (e) {
+                    e.keyCode === 13 ? (e.preventDefault(), gaspar.inputSended()) : null;
+                });
+                $('#send_button').on('click', function () {
+                    gaspar.inputSended();
+                });
+                $('#gaspar_input').on('input', function () {
+                    $('#gaspar_bottom').outerHeight(60 + $('#gaspar_input').outerHeight());
+                });
+            }, 1500);
             let new_id = self.getRandomId(1000, 9999);
             console.log(`ID: ${new_id}`);
             let cookie = self.getCookie('user_id');
@@ -65,31 +95,30 @@ jQuery(document).ready(function ($) {
             return Math.floor(Math.random() * (max - min)) + min;
         },
         clickButton: function () {
+            console.log('Clicked');
             let self = this;
-            let body = $(containers.CONTAINER);
-            let preview = $(containers.PREVIEW_CONTAINER);
             if (!self.opened) {
-                $(containers.PREVIEW_CONTAINER).hide('drop', {direction: 'down'}, 600);
+                $('#gaspar_preview_container').hide('drop', {direction: 'down'}, 600);
                 clearTimeout(self.previewTimer);
-                $(containers.BUTTON).hide('scale', {percent: 0, direction: 'horizontal'}, 600, function () {
-                    $(containers.OPEN_ICON).css('display', 'none');
-                    $(containers.CLOSE_ICON).css('display', 'block');
-                    $(containers.BUTTON).show('scale', {percent: 0, direction: 'horizontal'}, 600);
+                $('#gaspar_button').hide('scale', {percent: 0, direction: 'horizontal'}, 600, function () {
+                    $('.open_gaspar').css('display', 'none');
+                    $('#close_gaspar').css('display', 'block');
+                    $('#gaspar_button').show('scale', {percent: 0, direction: 'horizontal'}, 600);
                 });
-                body.toggle('drop', {direction: 'down'}, 1000, function () {
-                    body.css('display', 'flex');
+                $('#gaspar_body').toggle('drop', {direction: 'down'}, 1000, function () {
+                    $('#gaspar_body').css('display', 'flex');
                 });
                 self.opened = true;
             } else {
-                body.toggle('drop', {direction: 'down'}, 1000);
-                $(containers.BUTTON).hide('scale', {percent: 0, direction: 'horizontal'}, 600, function () {
-                    $(containers.OPEN_ICON).css('display', 'block');
-                    $(containers.CLOSE_ICON).css('display', 'none');
-                    $(containers.BUTTON).show('scale', {percent: 0, direction: 'horizontal'}, 600);
+                $('#gaspar_body').toggle('drop', {direction: 'down'}, 1000);
+                $('#gaspar_button').hide('scale', {percent: 0, direction: 'horizontal'}, 600, function () {
+                    $('.open_gaspar').css('display', 'block');
+                    $('#close_gaspar').css('display', 'none');
+                    $('#gaspar_button').show('scale', {percent: 0, direction: 'horizontal'}, 600);
                 });
                 self.opened = false;
                 self.previewTimer = setTimeout(function () {
-                    $(containers.PREVIEW_CONTAINER).show('drop', {direction: 'down'}, 600);
+                    $('#gaspar_preview_container').show('drop', {direction: 'down'}, 600);
                 }, 10000);
                 clearTimeout(self.previewTimer);
             }
@@ -131,7 +160,7 @@ jQuery(document).ready(function ($) {
                 let myInit = {
                     method: 'GET'
                 };
-                let request = new Request('http://localhost:1880/translation/?value=' + text + '&lang=' + self.lang, myInit);
+                let request = new Request('https://chatbot.wine-manager.com/translation/?value=' + text + '&lang=' + self.lang, myInit);
                 fetch(request).then(function (response) {
                     return response.json();
                 }).then(function (jsonResponse) {
@@ -155,7 +184,7 @@ jQuery(document).ready(function ($) {
             if (sender === 'user') {
                 self.postToAPI(text);
             } else {
-                if ($('#gaspar_container').css('display') !== 'flex') {
+                if ($('#gaspar_container').css('display') !== 'flex' && self.opened === false) {
                     $('#gaspar_preview_container').show('drop', options, 700);
                 }
             }
@@ -169,7 +198,7 @@ jQuery(document).ready(function ($) {
                 let myInit = {
                     method: 'GET'
                 };
-                let request = new Request('http://localhost:1880/translation/?value=' + button.label + '&lang=' + self.lang, myInit);
+                let request = new Request('https://chatbot.wine-manager.com/translation/?value=' + button.label + '&lang=' + self.lang, myInit);
                 fetch(request).then(function (response) {
                     return response.json();
                 }).then(function (jsonResponse) {
@@ -220,7 +249,7 @@ jQuery(document).ready(function ($) {
             let carousel = document.createElement('div');
             $(carousel).addClass('card_carousel');
             cards.forEach(function (card) {
-                let imageHolder = card.image || 'img/wines_in_my_wish_list.jpg';
+                let imageHolder = card.image || 'https://www.wine-manager.com/red/img/wines_in_my_wish_list.jpg';
                 let _score = card.overall_wp_score;
                 let foodMatch = card.normalised_foodmatch || null;
                 let normalizedMatch = '';
@@ -246,7 +275,7 @@ jQuery(document).ready(function ($) {
                 } else if (card.price_koeff > 1.0) {
                     bottleSize = 'big bottle';
                 }
-                let colorIMG = 'img/' + card.wine_type_name + '/' + bottleSize + '.png';
+                let colorIMG = 'https://www.wine-manager.com/red/img/' + card.wine_type_name + '/' + bottleSize + '.png';
                 let ratingColor = '';
                 let scoreColor = '';
                 let matchColor = '';
@@ -434,7 +463,7 @@ jQuery(document).ready(function ($) {
                 method: 'GET'
             };
             let self = this;
-            let request = new Request('http://localhost:1880/watson/' + self.user_id + '/' + self.place + '/?value=' + value + '&lang=' + self.lang + '&wines=' + self.wines + '&pairing=' + self.pairing, myInit);
+            let request = new Request('https://chatbot.wine-manager.com/watson/' + self.user_id + '/' + self.place + '/?value=' + value + '&lang=' + self.lang + '&wines=' + self.wines + '&pairing=' + self.pairing, myInit);
             fetch(request).then(function (response) {
                 return response.json();
             }).then(function (jsonResponse) {
@@ -574,4 +603,33 @@ jQuery(document).ready(function ($) {
         }
     };
     gaspar.initialize();
+    // $('#gaspar_button').on('click', function () {
+    //     gaspar.clickButton();
+    // });
+    // if (!self.opened) {
+    //     $('#gaspar_preview_container').hide('drop', {direction: 'down'}, 600);
+    //     clearTimeout(gaspar.previewTimer);
+    //     $('#gaspar_button').hide('scale', {percent: 0, direction: 'horizontal'}, 600, function () {
+    //         $('.open_gaspar').css('display', 'none');
+    //         $('#close_gaspar').css('display', 'block');
+    //         $('#gaspar_button').show('scale', {percent: 0, direction: 'horizontal'}, 600);
+    //     });
+    //     $('#gaspar_body').toggle('drop', {direction: 'down'}, 1000, function () {
+    //         $('#gaspar_body').css('display', 'flex');
+    //     });
+    //     gaspar.opened = true;
+    // } else {
+    //     $('#gaspar_body').toggle('drop', {direction: 'down'}, 1000);
+    //     $('#gaspar_button').hide('scale', {percent: 0, direction: 'horizontal'}, 600, function () {
+    //         $('.open_gaspar').css('display', 'block');
+    //         $('#close_gaspar').css('display', 'none');
+    //         $('#gaspar_button').show('scale', {percent: 0, direction: 'horizontal'}, 600);
+    //     });
+    //     gaspar.opened = false;
+    //     gaspar.previewTimer = setTimeout(function () {
+    //         $('#gaspar_preview_container').show('drop', {direction: 'down'}, 600);
+    //     }, 10000);
+    //     clearTimeout(gaspar.previewTimer);
+    // }
+
 });

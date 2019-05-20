@@ -188,7 +188,7 @@ body {
     display: none;
 }
 
-#gaspar_container #gaspar_body #message_queue .filter .filter_input{
+#gaspar_container #gaspar_body #message_queue .filter .filter_input {
     padding-top: 13px;
     padding-bottom: 12px;
     padding-left: 12px;
@@ -196,16 +196,16 @@ body {
     flex-direction: row;
 }
 
-#gaspar_container #gaspar_body #message_queue .filter .filter_input .filter_input_changeable{
+#gaspar_container #gaspar_body #message_queue .filter .filter_input .filter_input_changeable {
     width: 150px;
     margin-left: 10px;
 }
 
-#gaspar_container #gaspar_body #message_queue .filter .filter_input .filter_input_changeable:focus{
+#gaspar_container #gaspar_body #message_queue .filter .filter_input .filter_input_changeable:focus {
     outline: none;
 }
 
-#gaspar_container #gaspar_body #message_queue .filter .filter_options{
+#gaspar_container #gaspar_body #message_queue .filter .filter_options {
     overflow-y: scroll;
     height: 200px;
     background: white;
@@ -225,12 +225,13 @@ body {
     width: 10px;
 }
 
-#gaspar_container #gaspar_body #message_queue .filter .filter_options .filter_option{
+#gaspar_container #gaspar_body #message_queue .filter .filter_options .filter_option {
     cursor: pointer;
     height: 30px;
     padding-left: 12px;
 }
-#gaspar_container #gaspar_body #message_queue .filter .filter_options .filter_option:hover{
+
+#gaspar_container #gaspar_body #message_queue .filter .filter_options .filter_option:hover {
     background: #f4f4f4;
 }
 
@@ -241,22 +242,21 @@ body {
     transition: .3s ease-in;
 }
 
-#gaspar_container #gaspar_body  #message_queue::-webkit-scrollbar {
+#gaspar_container #gaspar_body #message_queue::-webkit-scrollbar {
     width: 9px;
 }
 
-#gaspar_container #gaspar_body  #message_queue::-webkit-scrollbar-track {
+#gaspar_container #gaspar_body #message_queue::-webkit-scrollbar-track {
     background: transparent;
 }
 
-#gaspar_container #gaspar_body  #message_queue::-webkit-scrollbar-thumb {
+#gaspar_container #gaspar_body #message_queue::-webkit-scrollbar-thumb {
     background: #d9d9d9;
     border-radius: 4px;
     width: 10px;
 }
 
-
-#gaspar_container #gaspar_body  #message_queue::-webkit-scrollbar-thumb:hover {
+#gaspar_container #gaspar_body #message_queue::-webkit-scrollbar-thumb:hover {
 }
 
 #gaspar_container #gaspar_body #message_queue .carousel_holder {
@@ -288,7 +288,7 @@ body {
     height: 30px;
     box-sizing: border-box;
     background: #ffffff;
-    box-shadow: 0 0 1px 2px rgba(0,0,0,0.3);
+    box-shadow: 0 0 1px 2px rgba(0, 0, 0, 0.3);
     text-align: center;
     border-radius: 100%;
     padding: 7px 0;
@@ -361,13 +361,13 @@ body {
     margin-right: 4px;
 }
 
-#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_images .wine_image img{
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_images .wine_image img {
     width: 79px;
     height: 79px;
     border-radius: 100%;
 }
 
-#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_images .wine_country img{
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_header .wine_images .wine_country img {
     border: 3px solid white;
     width: 31px;
     box-sizing: border-box;
@@ -458,13 +458,13 @@ body {
     display: none;
 }
 
-#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description .wine_description_text .notes_read_more{
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description .wine_description_text .notes_read_more {
     color: #f1824a;
     font-style: italic;
     cursor: pointer;
 }
 
-#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description .wine_description_text .notes_read_less{
+#gaspar_container #gaspar_body #message_queue .wine_card .wine_card_description .wine_description_text .notes_read_less {
     color: #f1824a;
     font-style: italic;
     cursor: pointer;
@@ -495,11 +495,11 @@ body {
 }
 
 #gaspar_container #gaspar_body #message_queue #waves_message #wave .dot:nth-child(2) {
-     animation-delay: -1.1s;
- }
+    animation-delay: -1.1s;
+}
 
 #gaspar_container #gaspar_body #message_queue #waves_message #wave .dot:nth-child(3) {
-     animation-delay: -0.9s;
+    animation-delay: -0.9s;
 }
 
 @keyframes wave {
@@ -615,13 +615,13 @@ body {
     text-decoration: none;
 }
 
-@media screen and (max-width: 786px){
-     #gaspar_container {
-         /*width: 95%;*/
-         right: 5px;
-         top: 10px;
-         bottom: unset;
-     }
+@media screen and (max-width: 786px) {
+    #gaspar_container {
+        /*width: 95%;*/
+        right: 5px;
+        top: 10px;
+        bottom: unset;
+    }
 
     #gaspar_button {
         right: 0px;
@@ -631,6 +631,14 @@ body {
     #gaspar_preview_container {
         bottom: 85px;
         right: 5px;
+    }
+
+    #gaspar_body {
+        height: 280px;
+    }
+
+    #message_queue {
+        height: 280px;
     }
 }
 
