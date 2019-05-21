@@ -122,7 +122,7 @@ jQuery(document).ready(function ($) {
             let self = this;
             setTimeout(function () {
                 let options = {direction: ''};
-                sender === 'gaspar' ? (options.direction = 'up') : options.direction = 'right';
+                sender === 'gaspar' ? (options.direction = 'left') : options.direction = 'right';
                 switch (type) {
                     case 'text':
                         self.addText(value, sender, options);
@@ -203,7 +203,7 @@ jQuery(document).ready(function ($) {
                         }
                     });
                     $(newMessage).appendTo(containers.QUEUE);
-                    $(newMessage).show('drop', options, 400);
+                    $(newMessage).show('drop', options, 300);
                 });
             } else {
                 $(newMessage).append(button.label);
@@ -219,12 +219,12 @@ jQuery(document).ready(function ($) {
                     }
                 });
                 $(newMessage).appendTo(containers.QUEUE);
-                $(newMessage).show('drop', options, 400);
+                $(newMessage).show('drop', options, 300);
             }
             if (sender === self.previous_sender) {
                 setTimeout(() => {
                     $(newMessage).animate({marginTop: '5px'}, 200);
-                }, 500);
+                }, 300);
             }
             if (sender === self.previous_sender) {
                 $(newMessage).css('margin-top', '5px');

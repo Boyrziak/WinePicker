@@ -263,6 +263,7 @@ body {
     position: relative;
     overflow: visible;
     padding: 0 48px;
+    margin-top: 5px;
 }
 
 #gaspar_container #gaspar_body #message_queue .card_carousel {
@@ -619,7 +620,7 @@ body {
     #gaspar_container {
         /*width: 95%;*/
         right: 5px;
-        top: 10px;
+        top: 20px;
         bottom: unset;
     }
 
@@ -634,11 +635,11 @@ body {
     }
 
     #gaspar_body {
-        height: 280px!important;
+        height: 270px!important;
     }
 
     #message_queue {
-        height: 280px!important;
+        height: 270px!important;
     }
 }
 
