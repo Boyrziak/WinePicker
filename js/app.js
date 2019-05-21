@@ -31,16 +31,6 @@ jQuery(document).ready(function ($) {
         previous_sender: 'gaspar',
         initialize: function () {
             let self = this;
-            // let preview = $(containers.PREVIEW_CONTAINER);
-            // this.input.keydown(function (e) {
-            //     e.keyCode === 13 ? (e.preventDefault(), self.inputSended()) : null;
-            // });
-            // this.send.on('click', function () {
-            //     self.inputSended();
-            // });
-            // this.input.on('input', function () {
-            //     $('#gaspar_bottom').outerHeight(60 + $('#gaspar_input').outerHeight());
-            // });
             console.log('Initialize');
             setTimeout(function () {
                 $('#gaspar_button').on('click', function () {
@@ -65,9 +55,6 @@ jQuery(document).ready(function ($) {
                             $('#gaspar_button').show('scale', {percent: 0, direction: 'horizontal'}, 600);
                         });
                         self.opened = false;
-                        // self.previewTimer = setTimeout(function () {
-                        //     $('#gaspar_preview_container').show('drop', {direction: 'down'}, 600);
-                        // }, 10000);
                         clearTimeout(self.previewTimer);
                     }
                 });
@@ -519,6 +506,7 @@ jQuery(document).ready(function ($) {
                                 self.addMessage($(this).text(), 'user', 'text');
                                 $('#message_queue').animate({paddingBottom: '8px'}, 700);
                             });
+                            self.postToAPI('EXIT', true);
                             break;
                         case 'wines':
                             jsonResponse.text.forEach(function (step) {
@@ -537,6 +525,8 @@ jQuery(document).ready(function ($) {
                             // self.postToAPI('Exit', true);
                             self.wines = 'true';
                             self.pairing = 'false';
+                            self.postToAPI('ERROR', true);
+                            self.postToAPI('EXIT', true);
                             break;
                         case 'pairing':
                             jsonResponse.text.forEach(function (step) {
@@ -556,6 +546,7 @@ jQuery(document).ready(function ($) {
                             // self.postToAPI('Exit', true);
                             self.pairing = 'true';
                             self.wines = 'false';
+                            self.postToAPI('EXIT', true);
                             break;
                         case 'other':
                             jsonResponse.response.forEach(function (step) {

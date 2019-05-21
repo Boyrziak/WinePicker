@@ -634,11 +634,11 @@ body {
     }
 
     #gaspar_body {
-        height: 280px;
+        height: 280px!important;
     }
 
     #message_queue {
-        height: 280px;
+        height: 280px!important;
     }
 }
 
