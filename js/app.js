@@ -20,7 +20,7 @@ jQuery(document).ready(function ($) {
         opened: false,
         foodList: [],
         wineList: [],
-        place: 1333,
+        place: 7522,
         lang: 'en',
         user_id: 0,
         wines: false,
@@ -32,7 +32,19 @@ jQuery(document).ready(function ($) {
         initialize: function () {
             let self = this;
             console.log('Initialize');
+            let myInit = {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'}
+            };
+            let request = new Request('http://localhost:1880/customization?place=' + self.place, myInit);
             setTimeout(function () {
+                fetch(request).then((response) => {
+                    console.log(response);
+                    return response.json();
+                }).then((jsonResponse)=>{
+                    console.log(jsonResponse);
+                    self.customizeWidget(jsonResponse);
+                });
                 $('#gaspar_button').on('click', function () {
                     console.log('Click');
                     if (!self.opened) {
@@ -73,6 +85,7 @@ jQuery(document).ready(function ($) {
             let cookie = self.getCookie('user_id');
             if (!cookie) {
                 self.setCookie('user_id', new_id);
+                cookie = self.getCookie('user_id');
             }
             self.user_id = cookie;
             console.log(`Cookie: ${self.user_id}`);
@@ -80,6 +93,52 @@ jQuery(document).ready(function ($) {
         },
         getRandomId: function (min, max) {
             return Math.floor(Math.random() * (max - min)) + min;
+        },
+        customizeWidget: function(customizeJson) {
+            // var style = (function () {
+            //     // Create the <style> tag
+            //     var style = document.createElement("style");
+            //
+            //     // WebKit hack
+            //     style.appendChild(document.createTextNode(""));
+            //
+            //     // Add the <style> element to the page
+            //     document.head.appendChild(style);
+            //
+            //     console.log(style.sheet.cssRules); // length is 0, and no rules
+            //
+            //     return style;
+            // })();
+            // style.sheet.insertRule('#gaspar_button {background: #' + customizeJson.main_color +'};', 0);
+            // style.sheet.insertRule('#gaspar_container #gaspar_header {background: #' + customizeJson.main_color + ';}', 0);
+            // style.sheet.insertRule('#gaspar_container #gaspar_body #message_queue .button {border-color: #' + customizeJson.main_color + ';}', 0);
+            // style.sheet.insertRule('#gaspar_container #gaspar_body #message_queue .button {border-color: #' + customizeJson.main_color + '; color: #' + customizeJson.main_color + ';}', 0);
+            // style.sheet.insertRule('#gaspar_container #gaspar_bottom #send_button {color: #' + customizeJson.main_color + ';}', 0);
+            // style.sheet.insertRule('#gaspar_container #gaspar_bottom #bottom_text #orange_text {color: #' + customizeJson.main_color + ';}', 0);
+            // style.sheet.insertRule('#gaspar_container #gaspar_body #message_queue .user_message {color: #' + customizeJson.user_color + ';}', 0);
+            // $('#gaspar_button').css('background', customizeJson.main_color);
+            // $('#gaspar_container #gaspar_header').css('background', customizeJson.main_color);
+            // $('#gaspar_header').css('background', customizeJson.main_color);
+            // $('body').prepend('<style>#gaspar_button {background: ' + customizeJson.main_color +'};</style>');
+            let style = document.createElement('style');
+            style.innerHTML =
+                '#gaspar_button {' +
+                'background: #'+ customizeJson.main_color +';' +
+                '}' + '#gaspar_container #gaspar_header  {' +
+                'background: #'+ customizeJson.main_color +';' +
+                '}' + '#gaspar_container #gaspar_body #message_queue .button {' +
+                'border-color: #'+ customizeJson.main_color +'; color: #' + customizeJson.main_color + ';' +
+                '}' + '#gaspar_container #gaspar_bottom #send_button {' +
+                'color: #'+ customizeJson.main_color +';' +
+                '}' + '#gaspar_container #gaspar_bottom #bottom_text #orange_text {' +
+                'color: #'+ customizeJson.main_color +';' +
+                '}' + '#gaspar_container #gaspar_body #message_queue .user_message {' +
+                'background: #'+ customizeJson.user_color +';' +
+                '}' + '#gaspar_container #gaspar_body #message_queue .gaspar_message {' +
+                'background: #'+ customizeJson.main_color +';' +
+                '}' ;
+            let ref = document.querySelector('script');
+            ref.parentNode.insertBefore(style, ref);
         },
         clickButton: function () {
             console.log('Clicked');
