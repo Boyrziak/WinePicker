@@ -9,8 +9,10 @@ jQuery(document).ready(function ($) {
         SEND_BUTTON: '#send_button',
         QUEUE: '#message_queue'
     };
+    let namespace = {};
 
-    let gaspar = {
+
+    namespace.gaspar = {
         button: $(containers.BUTTON),
         body: $(containers.CONTAINER),
         input: $(containers.INPUT),
@@ -20,8 +22,9 @@ jQuery(document).ready(function ($) {
         opened: false,
         foodList: [],
         wineList: [],
-        place: 7522,
+        place: 1200,
         lang: 'en',
+        defaultMessage: '',
         user_id: 0,
         wines: false,
         pairing: false,
@@ -31,22 +34,28 @@ jQuery(document).ready(function ($) {
         previous_sender: 'gaspar',
         initialize: function () {
             let self = this;
-            console.log('Initialize');
+            // console.log('Initialize');
             let myInit = {
                 method: 'GET',
                 headers: {'Content-Type': 'application/json'}
             };
-            let request = new Request('http://localhost:1880/customization?place=' + self.place, myInit);
             setTimeout(function () {
+                let id = $('#gaspar_id').text() || self.place;
+                self.place = id;
+                console.log(self.place);
+                let request = new Request('https://chatbot.wine-manager.com/customization?place=' + self.place, myInit);
                 fetch(request).then((response) => {
-                    console.log(response);
+                    // console.log(response);
                     return response.json();
                 }).then((jsonResponse)=>{
                     console.log(jsonResponse);
                     self.customizeWidget(jsonResponse);
+                }).catch((error)=>{
+                    console.log(error);
+                    $('#gaspar_button').animate({opacity: 1}, 600);
+                    self.postToAPI(' ');
                 });
                 $('#gaspar_button').on('click', function () {
-                    console.log('Click');
                     if (!self.opened) {
                         $('#gaspar_preview_container').hide('drop', {direction: 'down'}, 600);
                         clearTimeout(self.previewTimer);
@@ -71,77 +80,65 @@ jQuery(document).ready(function ($) {
                     }
                 });
                 $('#gaspar_input').keydown(function (e) {
-                    e.keyCode === 13 ? (e.preventDefault(), gaspar.inputSended()) : null;
+                    e.keyCode === 13 ? (e.preventDefault(), self.inputSended()) : null;
                 });
                 $('#send_button').on('click', function () {
-                    gaspar.inputSended();
+                    self.inputSended();
                 });
                 $('#gaspar_input').on('input', function () {
                     $('#gaspar_bottom').outerHeight(60 + $('#gaspar_input').outerHeight());
                 });
             }, 1500);
             let new_id = self.getRandomId(1000, 9999);
-            console.log(`ID: ${new_id}`);
+            // console.log(`ID: ${new_id}`);
+            self.deleteCookie('user_id');
             let cookie = self.getCookie('user_id');
             if (!cookie) {
                 self.setCookie('user_id', new_id);
                 cookie = self.getCookie('user_id');
             }
             self.user_id = cookie;
-            console.log(`Cookie: ${self.user_id}`);
-            self.postToAPI('Hello');
+            // console.log(`Cookie: ${self.user_id}`);
         },
         getRandomId: function (min, max) {
             return Math.floor(Math.random() * (max - min)) + min;
         },
         customizeWidget: function(customizeJson) {
-            // var style = (function () {
-            //     // Create the <style> tag
-            //     var style = document.createElement("style");
-            //
-            //     // WebKit hack
-            //     style.appendChild(document.createTextNode(""));
-            //
-            //     // Add the <style> element to the page
-            //     document.head.appendChild(style);
-            //
-            //     console.log(style.sheet.cssRules); // length is 0, and no rules
-            //
-            //     return style;
-            // })();
-            // style.sheet.insertRule('#gaspar_button {background: #' + customizeJson.main_color +'};', 0);
-            // style.sheet.insertRule('#gaspar_container #gaspar_header {background: #' + customizeJson.main_color + ';}', 0);
-            // style.sheet.insertRule('#gaspar_container #gaspar_body #message_queue .button {border-color: #' + customizeJson.main_color + ';}', 0);
-            // style.sheet.insertRule('#gaspar_container #gaspar_body #message_queue .button {border-color: #' + customizeJson.main_color + '; color: #' + customizeJson.main_color + ';}', 0);
-            // style.sheet.insertRule('#gaspar_container #gaspar_bottom #send_button {color: #' + customizeJson.main_color + ';}', 0);
-            // style.sheet.insertRule('#gaspar_container #gaspar_bottom #bottom_text #orange_text {color: #' + customizeJson.main_color + ';}', 0);
-            // style.sheet.insertRule('#gaspar_container #gaspar_body #message_queue .user_message {color: #' + customizeJson.user_color + ';}', 0);
-            // $('#gaspar_button').css('background', customizeJson.main_color);
-            // $('#gaspar_container #gaspar_header').css('background', customizeJson.main_color);
-            // $('#gaspar_header').css('background', customizeJson.main_color);
-            // $('body').prepend('<style>#gaspar_button {background: ' + customizeJson.main_color +'};</style>');
-            let style = document.createElement('style');
-            style.innerHTML =
-                '#gaspar_button {' +
-                'background: #'+ customizeJson.main_color +';' +
-                '}' + '#gaspar_container #gaspar_header  {' +
-                'background: #'+ customizeJson.main_color +';' +
-                '}' + '#gaspar_container #gaspar_body #message_queue .button {' +
-                'border-color: #'+ customizeJson.main_color +'; color: #' + customizeJson.main_color + ';' +
-                '}' + '#gaspar_container #gaspar_bottom #send_button {' +
-                'color: #'+ customizeJson.main_color +';' +
-                '}' + '#gaspar_container #gaspar_bottom #bottom_text #orange_text {' +
-                'color: #'+ customizeJson.main_color +';' +
-                '}' + '#gaspar_container #gaspar_body #message_queue .user_message {' +
-                'background: #'+ customizeJson.user_color +';' +
-                '}' + '#gaspar_container #gaspar_body #message_queue .gaspar_message {' +
-                'background: #'+ customizeJson.main_color +';' +
-                '}' ;
-            let ref = document.querySelector('script');
-            ref.parentNode.insertBefore(style, ref);
+            let self = this;
+            if (customizeJson.active === 'false') {
+                $('#gaspar_container').remove();
+                $('#gaspar_button').remove();
+                $('#gaspar_preview_container').remove();
+                delete namespace.gaspar;
+            } else {
+                self.defaultMessage = customizeJson.default_message;
+                let style = document.createElement('style');
+                style.innerHTML =
+                    '#gaspar_button {' +
+                    'background: #' + customizeJson.main_color + '!important;' +
+                    '}' + '#gaspar_container #gaspar_header  {' +
+                    'background: #' + customizeJson.main_color + '!important;' +
+                    '}' + '#gaspar_container #gaspar_body #message_queue .button {' +
+                    'border-color: #' + customizeJson.main_color + '!important; color: #' + customizeJson.main_color + '!important;' +
+                    '}' + '#gaspar_container #gaspar_bottom #send_button {' +
+                    'color: #' + customizeJson.main_color + '!important;' +
+                    '}' + '#gaspar_container #gaspar_bottom #bottom_text #orange_text {' +
+                    'color: #' + customizeJson.main_color + '!important;' +
+                    '}' + '#gaspar_container #gaspar_body #message_queue .user_message {' +
+                    'background: #' + customizeJson.user_color + '!important;' +
+                    '}' + '#gaspar_container #gaspar_body #message_queue .gaspar_message {' +
+                    'background: #' + customizeJson.main_color + '!important;' +
+                    '}';
+                let avatar = customizeJson.widget_avatar || 'img/Chat%20bot%20user%20pic_big.png';
+                $('#gaspar_header').find('img').attr('src', avatar);
+                $('#gaspar_preview_container').find('img').attr('src', avatar);
+                let ref = document.querySelector('script');
+                ref.parentNode.insertBefore(style, ref);
+                $('#gaspar_button').animate({opacity: 1}, 600);
+                self.postToAPI(' ');
+            }
         },
         clickButton: function () {
-            console.log('Clicked');
             let self = this;
             if (!self.opened) {
                 $('#gaspar_preview_container').hide('drop', {direction: 'down'}, 600);
@@ -172,7 +169,7 @@ jQuery(document).ready(function ($) {
         inputSended: function (text) {
             let inputText = text || $(containers.INPUT).text();
             $('.filter').hide('drop', {direction: 'right'}, 700);
-            $('#message_queue').animate({paddingBottom: '8px'}, 600);
+            // $('#message_queue').animate({paddingBottom: '8px'}, 600);
             let self = this;
             self.addMessage(inputText, 'user', 'text');
             $(containers.INPUT).empty();
@@ -201,8 +198,8 @@ jQuery(document).ready(function ($) {
             let self = this;
             let newMessage = document.createElement('div');
             $(newMessage).addClass('message ' + sender + '_message');
-            $(newMessage).css('display', 'none');
-            if (self.lang !== 'en') {
+            // $(newMessage).css('display', 'none');
+            if (self.lang !== 'en' && sender !== 'user') {
                 let myInit = {
                     method: 'GET'
                 };
@@ -213,13 +210,13 @@ jQuery(document).ready(function ($) {
                     let translated = jsonResponse.response.translations[0].translation;
                     $(newMessage).append(translated);
                     $(newMessage).appendTo(containers.QUEUE);
-                    $(newMessage).show('drop', options, 400);
+                    // $(newMessage).show('drop', options, 400);
                 });
             } else {
                 $(newMessage).addClass('message ' + sender + '_message');
                 $(newMessage).append(text);
                 $(newMessage).appendTo(containers.QUEUE);
-                $(newMessage).show('drop', options, 400);
+                // $(newMessage).show('drop', options, 400);
             }
             if (sender === self.previous_sender) {
                 setTimeout(() => {
@@ -235,6 +232,7 @@ jQuery(document).ready(function ($) {
                 }
             }
             self.previous_sender = sender;
+            // $('#message_queue').animate({paddingBottom: '8px'}, 400);
         },
         addButtons: function (button, options, sender) {
             let self = this;
@@ -250,7 +248,7 @@ jQuery(document).ready(function ($) {
                 }).then(function (jsonResponse) {
                     button.label = jsonResponse.response.translations[0].translation;
                     $(newMessage).append(button.label);
-                    $(newMessage).css('display', 'none');
+                    // $(newMessage).css('display', 'none');
                     newMessage.addEventListener('click', function () {
                         let regExp = /:\s(\w*)/gi;
                         let buttonLocale = regExp.exec(button.label);
@@ -262,11 +260,11 @@ jQuery(document).ready(function ($) {
                         }
                     });
                     $(newMessage).appendTo(containers.QUEUE);
-                    $(newMessage).show('drop', options, 300);
+                    // $(newMessage).show('drop', options, 300);
                 });
             } else {
                 $(newMessage).append(button.label);
-                $(newMessage).css('display', 'none');
+                // $(newMessage).css('display', 'none');
                 newMessage.addEventListener('click', function () {
                     let regExp = /:\s(\w*)/gi;
                     let buttonLocale = regExp.exec(button.label);
@@ -278,7 +276,7 @@ jQuery(document).ready(function ($) {
                     }
                 });
                 $(newMessage).appendTo(containers.QUEUE);
-                $(newMessage).show('drop', options, 300);
+                // $(newMessage).show('drop', options, 300);
             }
             if (sender === self.previous_sender) {
                 setTimeout(() => {
@@ -289,6 +287,7 @@ jQuery(document).ready(function ($) {
                 $(newMessage).css('margin-top', '5px');
             }
             self.previous_sender = sender;
+            // $('#message_queue').animate({paddingBottom: '8px'}, 400);
         },
         addCarousel: function (cards) {
             let self = this;
@@ -556,16 +555,16 @@ jQuery(document).ready(function ($) {
                                     self.findFood = true;
                                     $('.filter').hide('drop', {direction: 'right'}, 700);
                                     self.addMessage($(this).text(), 'user', 'text');
-                                    $('#message_queue').animate({paddingBottom: '8px'}, 700);
+                                    $('#message_queue').animate({paddingBottom: '45px'}, 700);
                                 });
                             });
                             $('.filter_option').on('click', function () {
                                 $('.filter').hide('drop', {direction: 'right'}, 700);
                                 self.findFood = true;
                                 self.addMessage($(this).text(), 'user', 'text');
-                                $('#message_queue').animate({paddingBottom: '8px'}, 700);
+                                $('#message_queue').animate({paddingBottom: '45px'}, 700);
                             });
-                            self.postToAPI('EXIT', true);
+                            self.postToAPI('API CALL SUCCESS', true);
                             break;
                         case 'wines':
                             jsonResponse.text.forEach(function (step) {
@@ -584,8 +583,7 @@ jQuery(document).ready(function ($) {
                             // self.postToAPI('Exit', true);
                             self.wines = 'true';
                             self.pairing = 'false';
-                            self.postToAPI('ERROR', true);
-                            self.postToAPI('EXIT', true);
+                            self.postToAPI('API CALL SUCCESS', true);
                             break;
                         case 'pairing':
                             jsonResponse.text.forEach(function (step) {
@@ -602,15 +600,18 @@ jQuery(document).ready(function ($) {
                             self.wineList = jsonResponse.data;
                             self.messageQueue.push({value: jsonResponse.data, sender: 'gaspar', type: 'carousel'});
                             self.flushQueue(self.messageQueue);
-                            // self.postToAPI('Exit', true);
                             self.pairing = 'true';
                             self.wines = 'false';
-                            self.postToAPI('EXIT', true);
+                            self.postToAPI('API CALL SUCCESS', true);
                             break;
                         case 'other':
-                            jsonResponse.response.forEach(function (step) {
+                            jsonResponse.response.forEach(function (step, index) {
                                 if (step.response_type === 'text') {
-                                    self.messageQueue.push({value: step.text, sender: 'gaspar', type: 'text'});
+                                    if (jsonResponse.intents.length === 0 && self.defaultMessage.length > 2 && index === 0) {
+                                        self.messageQueue.push({value: self.defaultMessage, sender: 'gaspar', type: 'text'});
+                                    } else {
+                                        self.messageQueue.push({value: step.text, sender: 'gaspar', type: 'text'});
+                                    }
                                 } else if (step.response_type === 'option') {
                                     self.messageQueue.push({value: step.title, sender: 'gaspar', type: 'text'});
                                     step.options.forEach(function (option) {
@@ -624,24 +625,17 @@ jQuery(document).ready(function ($) {
                 }
             });
         },
-        showPreview: function (text) {
-            let self = this;
-            self.previewTimer = setTimeout(function () {
-                $(containers.PREVIEW_CONTAINER).show('drop', {direction: 'down'}, 600);
-            }, 10000);
-            clearTimeout(self.previewTimer);
-        },
         flushQueue: function (currentQueue) {
             let self = this;
             if (currentQueue.length > 0) {
                 let currentElement = currentQueue.shift();
                 setTimeout(() => {
-                    $('#message_queue').animate({paddingBottom: '60px'}, 200);
+                    // $('#message_queue').animate({paddingBottom: '60px'},200);
                     self.scrollQuery(400);
                     $('#waves_message').show('drop', {'direction': 'left'}, 800);
                     setTimeout(() => {
-                        $('#message_queue').animate({paddingBottom: '8px'}, 400);
-                        $('#waves_message').hide('drop', {'direction': 'left'}, 300);
+                        $('#waves_message').hide('drop', {'direction': 'left'}, 200);
+                        // $('#message_queue').animate({paddingBottom: '8px'},300);
                         self.addMessage(currentElement.value, currentElement.sender, currentElement.type);
                         self.flushQueue(currentQueue);
                     }, self.type_timer);
@@ -652,34 +646,5 @@ jQuery(document).ready(function ($) {
             $(containers.QUEUE).animate({scrollTop: $(containers.QUEUE)[0].scrollHeight}, timeout);
         }
     };
-    gaspar.initialize();
-    // $('#gaspar_button').on('click', function () {
-    //     gaspar.clickButton();
-    // });
-    // if (!self.opened) {
-    //     $('#gaspar_preview_container').hide('drop', {direction: 'down'}, 600);
-    //     clearTimeout(gaspar.previewTimer);
-    //     $('#gaspar_button').hide('scale', {percent: 0, direction: 'horizontal'}, 600, function () {
-    //         $('.open_gaspar').css('display', 'none');
-    //         $('#close_gaspar').css('display', 'block');
-    //         $('#gaspar_button').show('scale', {percent: 0, direction: 'horizontal'}, 600);
-    //     });
-    //     $('#gaspar_body').toggle('drop', {direction: 'down'}, 1000, function () {
-    //         $('#gaspar_body').css('display', 'flex');
-    //     });
-    //     gaspar.opened = true;
-    // } else {
-    //     $('#gaspar_body').toggle('drop', {direction: 'down'}, 1000);
-    //     $('#gaspar_button').hide('scale', {percent: 0, direction: 'horizontal'}, 600, function () {
-    //         $('.open_gaspar').css('display', 'block');
-    //         $('#close_gaspar').css('display', 'none');
-    //         $('#gaspar_button').show('scale', {percent: 0, direction: 'horizontal'}, 600);
-    //     });
-    //     gaspar.opened = false;
-    //     gaspar.previewTimer = setTimeout(function () {
-    //         $('#gaspar_preview_container').show('drop', {direction: 'down'}, 600);
-    //     }, 10000);
-    //     clearTimeout(gaspar.previewTimer);
-    // }
-
+    namespace.gaspar.initialize();
 });
