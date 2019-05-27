@@ -47,10 +47,10 @@ jQuery(document).ready(function ($) {
                 fetch(request).then((response) => {
                     // console.log(response);
                     return response.json();
-                }).then((jsonResponse)=>{
+                }).then((jsonResponse) => {
                     console.log(jsonResponse);
                     self.customizeWidget(jsonResponse);
-                }).catch((error)=>{
+                }).catch((error) => {
                     console.log(error);
                     $('#gaspar_button').animate({opacity: 1}, 600);
                     self.postToAPI(' ');
@@ -103,7 +103,7 @@ jQuery(document).ready(function ($) {
         getRandomId: function (min, max) {
             return Math.floor(Math.random() * (max - min)) + min;
         },
-        customizeWidget: function(customizeJson) {
+        customizeWidget: function (customizeJson) {
             let self = this;
             if (customizeJson.active === 'false') {
                 $('#gaspar_container').remove();
@@ -200,7 +200,7 @@ jQuery(document).ready(function ($) {
             let newMessage = document.createElement('div');
             $(newMessage).addClass('message ' + sender + '_message');
             // $(newMessage).css('display', 'none');
-                if (self.lang !== 'en' && sender !== 'user') {
+            if (self.lang !== 'en' && sender !== 'user') {
                 let myInit = {
                     method: 'GET'
                 };
@@ -213,7 +213,7 @@ jQuery(document).ready(function ($) {
                     $(newMessage).appendTo(containers.QUEUE);
                     // $(newMessage).show('drop', options, 400);
                 });
-            } else {
+            } else if (self.lang === 'en') {
                 $(newMessage).addClass('message ' + sender + '_message');
                 $(newMessage).append(text);
                 $(newMessage).appendTo(containers.QUEUE);
@@ -226,6 +226,20 @@ jQuery(document).ready(function ($) {
             }
             $('#gaspar_preview_container').find('.preview_text').empty().text(text);
             if (sender === 'user') {
+                // if (self.lang !== 'en') {
+                //     let myInit = {
+                //         method: 'GET'
+                //     };
+                //     let request = new Request('https://chatbot.wine-manager.com/translation/?value=' + text + '&lang=' + self.lang, myInit);
+                //     fetch(request).then(function (response) {
+                //         return response.json();
+                //     }).then(function (jsonResponse) {
+                //         let translated = jsonResponse.response.translations[0].translation;
+                //         self.postToAPI(translated);
+                //     });
+                // } else {
+                //     self.postToAPI(text);
+                // }
                 self.postToAPI(text);
             } else {
                 if ($('#gaspar_container').css('display') !== 'flex' && self.opened === false) {
@@ -509,7 +523,7 @@ jQuery(document).ready(function ($) {
                 method: 'GET'
             };
             let self = this;
-            let request = new Request('https://chatbot.wine-manager.com/watson/' + self.user_id + '/' + self.place + '/?value=' + value + '&lang=' + self.lang + '&wines=' + self.wines + '&pairing=' + self.pairing, myInit);
+            let request = new Request('http://localhost:1880/watson/' + self.user_id + '/' + self.place + '/?value=' + value + '&lang=' + self.lang + '&wines=' + self.wines + '&pairing=' + self.pairing, myInit);
             fetch(request).then(function (response) {
                 return response.json();
             }).then(function (jsonResponse) {
@@ -621,7 +635,11 @@ jQuery(document).ready(function ($) {
                             jsonResponse.response.forEach(function (step, index) {
                                 if (step.response_type === 'text') {
                                     if (jsonResponse.intents.length === 0 && self.defaultMessage.length > 2 && index === 0) {
-                                        self.messageQueue.push({value: self.defaultMessage, sender: 'gaspar', type: 'text'});
+                                        self.messageQueue.push({
+                                            value: self.defaultMessage,
+                                            sender: 'gaspar',
+                                            type: 'text'
+                                        });
                                     } else {
                                         self.messageQueue.push({value: step.text, sender: 'gaspar', type: 'text'});
                                     }
