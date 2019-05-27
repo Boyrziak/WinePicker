@@ -565,7 +565,11 @@ jQuery(document).ready(function ($) {
                                 self.addMessage($(this).text(), 'user', 'text');
                                 $('#message_queue').animate({paddingBottom: '45px'}, 700);
                             });
-                            self.postToAPI('API CALL SUCCESS', true);
+                            if (jsonResponse.data === 'ERR') {
+                                self.postToAPI('API CALL ERROR', true);
+                            } else {
+                                self.postToAPI('API CALL SUCCESS', true);
+                            }
                             break;
                         case 'wines':
                             jsonResponse.text.forEach(function (step) {
@@ -584,7 +588,11 @@ jQuery(document).ready(function ($) {
                             // self.postToAPI('Exit', true);
                             self.wines = 'true';
                             self.pairing = 'false';
-                            self.postToAPI('API CALL SUCCESS', true);
+                            if (jsonResponse.data === 'ERR') {
+                                self.postToAPI('API CALL ERROR', true);
+                            } else {
+                                self.postToAPI('API CALL SUCCESS', true);
+                            }
                             break;
                         case 'pairing':
                             jsonResponse.text.forEach(function (step) {
@@ -603,7 +611,11 @@ jQuery(document).ready(function ($) {
                             self.flushQueue(self.messageQueue);
                             self.pairing = 'true';
                             self.wines = 'false';
-                            self.postToAPI('API CALL SUCCESS', true);
+                            if (jsonResponse.data === 'ERR') {
+                                self.postToAPI('API CALL ERROR', true);
+                            } else {
+                                self.postToAPI('API CALL SUCCESS', true);
+                            }
                             break;
                         case 'other':
                             jsonResponse.response.forEach(function (step, index) {
