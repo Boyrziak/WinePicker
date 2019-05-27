@@ -477,22 +477,24 @@ jQuery(document).ready(function ($) {
             $(carouselWrap).append(rightButton);
             $(carouselWrap).append(carousel);
             $('#message_queue').append(carouselWrap);
-            $('.notes_read_more').on('click', function () {
-                $(this).parent().parent().parent().parent().animate({height: '324px', marginTop: '5px'}, 400);
-                $('.wine_card').animate({marginTop: '77px'}, 500);
-                $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
-                $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'none');
-                $(this).parent().parent().parent().find('.wine_description_text.second_text').css('display', 'block');
-                self.scrollQuery(400);
-            });
-            $('.notes_read_less').on('click', function () {
-                $(this).parent().parent().parent().parent().animate({height: '250', marginTop: '5px'}, 400);
-                $('.wine_card').animate({marginTop: '0'}, 500);
-                $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
-                $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'block');
-                $(this).parent().parent().parent().find('.wine_description_text.second_text').css('display', 'none');
-                self.scrollQuery(400);
-            });
+            setTimeout(() => {
+                $('.notes_read_more').on('click', function () {
+                    $(this).parent().parent().parent().parent().animate({height: '324px', marginTop: '5px'}, 400);
+                    $('.wine_card').animate({marginTop: '77px'}, 500);
+                    $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
+                    $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'none');
+                    $(this).parent().parent().parent().find('.wine_description_text.second_text').css('display', 'block');
+                    self.scrollQuery(400);
+                });
+                $('.notes_read_less').on('click', function () {
+                    $(this).parent().parent().parent().parent().animate({height: '250', marginTop: '5px'}, 400);
+                    $('.wine_card').animate({marginTop: '0'}, 500);
+                    $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
+                    $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'block');
+                    $(this).parent().parent().parent().find('.wine_description_text.second_text').css('display', 'none');
+                    self.scrollQuery(400);
+                });
+            }, 1000);
         },
         setCookie: function (name, value, options) {
             options = options || {};
