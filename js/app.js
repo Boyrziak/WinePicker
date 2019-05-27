@@ -24,7 +24,7 @@ jQuery(document).ready(function ($) {
         wineList: [],
         place: 1200,
         lang: 'en',
-        defaultMessage: '',
+        defaultMessage: 'Hello, my name is Gaspar. I will be your sommelier tonight',
         user_id: 0,
         wines: false,
         pairing: false,
@@ -194,12 +194,13 @@ jQuery(document).ready(function ($) {
                     self.scrollQuery(400) : null;
             }, 600);
         },
-        addText: function (text, sender, options) {
+        addText: function (text, sender, options, translate) {
             let self = this;
+            translate = translate || false;
             let newMessage = document.createElement('div');
             $(newMessage).addClass('message ' + sender + '_message');
             // $(newMessage).css('display', 'none');
-            if (self.lang !== 'en' && sender !== 'user') {
+                if (self.lang !== 'en' && sender !== 'user') {
                 let myInit = {
                     method: 'GET'
                 };
@@ -253,7 +254,7 @@ jQuery(document).ready(function ($) {
                         let regExp = /:\s(\w*)/gi;
                         let buttonLocale = regExp.exec(button.label);
                         if (!buttonLocale) {
-                            self.addMessage(button.label, 'user', 'text');
+                            self.addMessage(button.label, 'user', 'text', false);
                         } else {
                             self.lang = buttonLocale[1];
                             self.postToAPI('Hello');
@@ -269,7 +270,7 @@ jQuery(document).ready(function ($) {
                     let regExp = /:\s(\w*)/gi;
                     let buttonLocale = regExp.exec(button.label);
                     if (!buttonLocale) {
-                        self.addMessage(button.label, 'user', 'text');
+                        self.addMessage(button.label, 'user', 'text', false);
                     } else {
                         self.lang = buttonLocale[1];
                         self.postToAPI('Hello');
