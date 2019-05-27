@@ -194,9 +194,8 @@ jQuery(document).ready(function ($) {
                     self.scrollQuery(400) : null;
             }, 600);
         },
-        addText: function (text, sender, options, translate) {
+        addText: function (text, sender, options) {
             let self = this;
-            translate = translate || false;
             let newMessage = document.createElement('div');
             $(newMessage).addClass('message ' + sender + '_message');
             // $(newMessage).css('display', 'none');
@@ -204,7 +203,7 @@ jQuery(document).ready(function ($) {
                 let myInit = {
                     method: 'GET'
                 };
-                let request = new Request('https://chatbot.wine-manager.com/translation/?value=' + text + '&lang=' + self.lang, myInit);
+                let request = new Request('https://chatbot.wine-manager.com/translation/?value=' + text + '&srclang=en' + '&destlang=' + self.lang, myInit);
                 fetch(request).then(function (response) {
                     return response.json();
                 }).then(function (jsonResponse) {
@@ -218,6 +217,10 @@ jQuery(document).ready(function ($) {
                 $(newMessage).append(text);
                 $(newMessage).appendTo(containers.QUEUE);
                 // $(newMessage).show('drop', options, 400);
+            } else if (self.lang !== 'en' && sender === 'user') {
+                $(newMessage).addClass('message ' + sender + '_message');
+                $(newMessage).append(text);
+                $(newMessage).appendTo(containers.QUEUE);
             }
             if (sender === self.previous_sender) {
                 setTimeout(() => {
@@ -226,21 +229,20 @@ jQuery(document).ready(function ($) {
             }
             $('#gaspar_preview_container').find('.preview_text').empty().text(text);
             if (sender === 'user') {
-                // if (self.lang !== 'en') {
-                //     let myInit = {
-                //         method: 'GET'
-                //     };
-                //     let request = new Request('https://chatbot.wine-manager.com/translation/?value=' + text + '&lang=' + self.lang, myInit);
-                //     fetch(request).then(function (response) {
-                //         return response.json();
-                //     }).then(function (jsonResponse) {
-                //         let translated = jsonResponse.response.translations[0].translation;
-                //         self.postToAPI(translated);
-                //     });
-                // } else {
-                //     self.postToAPI(text);
-                // }
-                self.postToAPI(text);
+                if (self.lang !== 'en') {
+                    let myInit = {
+                        method: 'GET'
+                    };
+                    let request = new Request('https://chatbot.wine-manager.com/translation/?value=' + text + '&srclang=' + self.lang + '&destlang=' + 'en', myInit);
+                    fetch(request).then(function (response) {
+                        return response.json();
+                    }).then(function (jsonResponse) {
+                        let translated = jsonResponse.response.translations[0].translation;
+                        self.postToAPI(translated);
+                    });
+                } else {
+                    self.postToAPI(text);
+                }
             } else {
                 if ($('#gaspar_container').css('display') !== 'flex' && self.opened === false) {
                     $('#gaspar_preview_container').show('drop', options, 700);
@@ -253,11 +255,11 @@ jQuery(document).ready(function ($) {
             let self = this;
             let newMessage = document.createElement('div');
             $(newMessage).addClass('button');
-            if (self.lang !== 'en') {
+            if (self.lang !== 'en' && sender !== 'user') {
                 let myInit = {
                     method: 'GET'
                 };
-                let request = new Request('https://chatbot.wine-manager.com/translation/?value=' + button.label + '&lang=' + self.lang, myInit);
+                let request = new Request('https://chatbot.wine-manager.com/translation/?value=' + button.label + '&srclang=en' + '&destlang=' + self.lang, myInit);
                 fetch(request).then(function (response) {
                     return response.json();
                 }).then(function (jsonResponse) {
@@ -268,7 +270,7 @@ jQuery(document).ready(function ($) {
                         let regExp = /:\s(\w*)/gi;
                         let buttonLocale = regExp.exec(button.label);
                         if (!buttonLocale) {
-                            self.addMessage(button.label, 'user', 'text', false);
+                            self.addMessage(button.label, 'user', 'text');
                         } else {
                             self.lang = buttonLocale[1];
                             self.postToAPI('Hello');
@@ -277,16 +279,18 @@ jQuery(document).ready(function ($) {
                     $(newMessage).appendTo(containers.QUEUE);
                     // $(newMessage).show('drop', options, 300);
                 });
-            } else {
+            } else if (self.lang === 'en'){
                 $(newMessage).append(button.label);
                 // $(newMessage).css('display', 'none');
                 newMessage.addEventListener('click', function () {
                     let regExp = /:\s(\w*)/gi;
                     let buttonLocale = regExp.exec(button.label);
+                    console.log(buttonLocale);
                     if (!buttonLocale) {
-                        self.addMessage(button.label, 'user', 'text', false);
+                        self.addMessage(button.label, 'user', 'text');
                     } else {
                         self.lang = buttonLocale[1];
+                        // self.addText(button.label, 'user', {direction: 'left'});
                         self.postToAPI('Hello');
                     }
                 });
@@ -523,7 +527,7 @@ jQuery(document).ready(function ($) {
                 method: 'GET'
             };
             let self = this;
-            let request = new Request('http://localhost:1880/watson/' + self.user_id + '/' + self.place + '/?value=' + value + '&lang=' + self.lang + '&wines=' + self.wines + '&pairing=' + self.pairing, myInit);
+            let request = new Request('https://chatbot.wine-manager.com/watson/' + self.user_id + '/' + self.place + '/?value=' + value + '&lang=' + self.lang + '&wines=' + self.wines + '&pairing=' + self.pairing, myInit);
             fetch(request).then(function (response) {
                 return response.json();
             }).then(function (jsonResponse) {
