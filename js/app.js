@@ -210,6 +210,8 @@ jQuery(document).ready(function ($) {
                     let translated = jsonResponse.response.translations[0].translation;
                     $(newMessage).append(translated);
                     $(newMessage).appendTo(containers.QUEUE);
+                    self.messageQueue.length === 0 ?
+                        self.scrollQuery(400) : null;
                     // $(newMessage).show('drop', options, 400);
                 });
             } else if (self.lang === 'en') {
@@ -277,6 +279,8 @@ jQuery(document).ready(function ($) {
                         }
                     });
                     $(newMessage).appendTo(containers.QUEUE);
+                    self.messageQueue.length === 0 ?
+                        self.scrollQuery(400) : null;
                     // $(newMessage).show('drop', options, 300);
                 });
             } else if (self.lang === 'en') {
