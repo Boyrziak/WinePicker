@@ -207,7 +207,7 @@ jQuery(document).ready(function ($) {
                 fetch(request).then(function (response) {
                     return response.json();
                 }).then(function (jsonResponse) {
-                    let translated = jsonResponse.response.translations[0].translation;
+                    let translated = jsonResponse.text;
                     $(newMessage).append(translated);
                     $(newMessage).appendTo(containers.QUEUE);
                     self.messageQueue.length === 0 ?
@@ -239,7 +239,7 @@ jQuery(document).ready(function ($) {
                     fetch(request).then(function (response) {
                         return response.json();
                     }).then(function (jsonResponse) {
-                        let translated = jsonResponse.response.translations[0].translation;
+                        let translated = jsonResponse.text;
                         self.postToAPI(translated);
                     });
                 } else {
@@ -265,7 +265,7 @@ jQuery(document).ready(function ($) {
                 fetch(request).then(function (response) {
                     return response.json();
                 }).then(function (jsonResponse) {
-                    button.label = jsonResponse.response.translations[0].translation;
+                    button.label = jsonResponse.text;
                     $(newMessage).append(button.label);
                     // $(newMessage).css('display', 'none');
                     newMessage.addEventListener('click', function () {
@@ -325,7 +325,8 @@ jQuery(document).ready(function ($) {
                 fetch(request).then(function (response) {
                     return response.json();
                 }).then(function (jsonResponse) {
-                    translation = jsonResponse.response.translations[0].translation;
+                    console.log(jsonResponse);
+                    translation = jsonResponse.text;
                     let imageHolder = card.image || 'https://www.wine-manager.com/red/img/wines_in_my_wish_list.jpg';
                     let _score = card.overall_wp_score;
                     let foodMatch = card.normalised_foodmatch || null;
@@ -451,7 +452,7 @@ jQuery(document).ready(function ($) {
                                                 ` + notes + `<span class="notes_read_more">` + notesMore + `</span>
                                             </p>
                                             <p class="wine_description_text second_text">
-                                                ` + card.wm_notes + `<span class="notes_read_less">Read Less</span>
+                                                ` + translation + `<span class="notes_read_less">Read Less</span>
                                             </p>
                                         </div>
                                     </div>`);
@@ -480,15 +481,17 @@ jQuery(document).ready(function ($) {
             setTimeout(() => {
                 $('.notes_read_more').on('click', function () {
                     $(this).parent().parent().parent().parent().animate({height: '324px', marginTop: '5px'}, 400);
-                    $('.wine_card').animate({marginTop: '77px'}, 500);
+                    $('.wine_card').animate({marginTop: '77px', height: '250px'}, 500);
+                    $('.wine_card').find('.wine_description_text.first_text').css('display', 'block');
+                    $('.wine_card').find('.wine_description_text.second_text').css('display', 'none');
                     $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
                     $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'none');
                     $(this).parent().parent().parent().find('.wine_description_text.second_text').css('display', 'block');
                     self.scrollQuery(400);
                 });
                 $('.notes_read_less').on('click', function () {
-                    $(this).parent().parent().parent().parent().animate({height: '250', marginTop: '5px'}, 400);
-                    $('.wine_card').animate({marginTop: '0'}, 500);
+                    $(this).parent().parent().parent().parent().animate({height: '250px', marginTop: '5px'}, 400);
+                    $('.wine_card').animate({marginTop: '0', height: '250px'}, 500);
                     $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
                     $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'block');
                     $(this).parent().parent().parent().find('.wine_description_text.second_text').css('display', 'none');
