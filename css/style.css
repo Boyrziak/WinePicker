@@ -544,7 +544,6 @@ body {
 }
 
 #gaspar_container #gaspar_bottom #gaspar_input::before {
-    content: attr(placeholder);
     position: absolute;
     top: 0;
     left: 0;
@@ -555,11 +554,18 @@ body {
     font-weight: 400;
 }
 
+#gaspar_container #gaspar_bottom #gaspar_input:empty::before {
+    content: attr(placeholder);
+    display: block;
+}
+
 #gaspar_container #gaspar_bottom #gaspar_input:focus::before {
     content: '';
     opacity: 0;
     transition: .4s ease-in;
 }
+
+
 
 #gaspar_container #gaspar_bottom #send_button {
     position: absolute;

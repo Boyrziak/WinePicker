@@ -279,7 +279,7 @@ jQuery(document).ready(function ($) {
                     $(newMessage).appendTo(containers.QUEUE);
                     // $(newMessage).show('drop', options, 300);
                 });
-            } else if (self.lang === 'en'){
+            } else if (self.lang === 'en') {
                 $(newMessage).append(button.label);
                 // $(newMessage).css('display', 'none');
                 newMessage.addEventListener('click', function () {
@@ -313,88 +313,97 @@ jQuery(document).ready(function ($) {
             let carousel = document.createElement('div');
             $(carousel).addClass('card_carousel');
             cards.forEach(function (card) {
-                let imageHolder = card.image || 'https://www.wine-manager.com/red/img/wines_in_my_wish_list.jpg';
-                let _score = card.overall_wp_score;
-                let foodMatch = card.normalised_foodmatch || null;
-                let normalizedMatch = '';
-                let notes = card.wm_notes.slice(0, 80);
-                let notesMore = '';
-                if (card.wm_notes.length > 0) {
-                    notesMore = 'Read More'
-                }
-                if (card.wine_subtype_name.length > 0) {
-                    card.wine_subtype_name = ', ' + card.wine_subtype_name;
-                }
-                if (foodMatch) {
-                    normalizedMatch = foodMatch.toString().slice(0, 3);
-                } else {
-                    normalizedMatch = 'null';
-                }
-                let score = _score.toString().slice(0, 3);
-                let bottleSize = '';
-                if (card.price_koeff >= 0.375 && card.price_koeff <= 0.5) {
-                    bottleSize = '1_2 bottle';
-                } else if (card.price_koeff > 0.5 && card.price_koeff <= 1.0) {
-                    bottleSize = 'bottle';
-                } else if (card.price_koeff > 1.0) {
-                    bottleSize = 'big bottle';
-                }
-                let colorIMG = 'https://www.wine-manager.com/red/img/' + card.wine_type_name + '/' + bottleSize + '.png';
-                let ratingColor = '';
-                let scoreColor = '';
-                let matchColor = '';
-                if (card.overall_rating > 60 && card.overall_rating <= 65) {
-                    ratingColor = '#ca2d26';
-                } else if (card.overall_rating > 65 && card.overall_rating <= 70) {
-                    ratingColor = '#de5a25';
-                } else if (card.overall_rating > 70 && card.overall_rating <= 75) {
-                    ratingColor = '#f47220';
-                } else if (card.overall_rating > 75 && card.overall_rating <= 80) {
-                    ratingColor = '#f8b316';
-                } else if (card.overall_rating > 80 && card.overall_rating <= 85) {
-                    ratingColor = '#d4da22';
-                } else if (card.overall_rating > 85 && card.overall_rating <= 90) {
-                    ratingColor = '#abd036';
-                } else if (card.overall_rating > 90 && card.overall_rating <= 95) {
-                    ratingColor = '#75c042';
-                } else if (card.overall_rating > 95) {
-                    ratingColor = '#3ab764';
-                }
-                if (normalizedMatch > 2 && normalizedMatch <= 3) {
-                    matchColor = '#ca2d26';
-                } else if (normalizedMatch > 3 && normalizedMatch <= 4) {
-                    matchColor = '#de5a25';
-                } else if (normalizedMatch > 4 && normalizedMatch <= 5) {
-                    matchColor = '#f47220';
-                } else if (normalizedMatch > 5 && normalizedMatch <= 6) {
-                    matchColor = '#f8b316';
-                } else if (normalizedMatch > 6 && normalizedMatch <= 7) {
-                    matchColor = '#d4da22';
-                } else if (normalizedMatch > 7 && normalizedMatch <= 8) {
-                    matchColor = '#abd036';
-                } else if (normalizedMatch > 8 && normalizedMatch <= 9) {
-                    matchColor = '#75c042';
-                } else if (normalizedMatch > 9 && normalizedMatch <= 10) {
-                    matchColor = '#3ab764';
-                }
-                if (score > 2 && score <= 3) {
-                    scoreColor = '#ca2d26';
-                } else if (score > 3 && score <= 4) {
-                    scoreColor = '#de5a25';
-                } else if (score > 4 && score <= 5) {
-                    scoreColor = '#f47220';
-                } else if (score > 5 && score <= 6) {
-                    scoreColor = '#f8b316';
-                } else if (score > 6 && score <= 7) {
-                    scoreColor = '#d4da22';
-                } else if (score > 7 && score <= 8) {
-                    scoreColor = '#abd036';
-                } else if (score > 8 && score <= 9) {
-                    scoreColor = '#75c042';
-                } else if (score > 9 && score <= 10) {
-                    scoreColor = '#3ab764';
-                }
-                $(carousel).append(`<div class="wine_card">
+                let translation = card.wm_notes;
+                let myInit = {
+                    method: 'GET'
+                };
+                let request = new Request('https://chatbot.wine-manager.com/translation/?value=' + translation + '&srclang=en' + '&destlang=' + self.lang, myInit);
+                fetch(request).then(function (response) {
+                    return response.json();
+                }).then(function (jsonResponse) {
+                    translation = jsonResponse.response.translations[0].translation;
+                    let imageHolder = card.image || 'https://www.wine-manager.com/red/img/wines_in_my_wish_list.jpg';
+                    let _score = card.overall_wp_score;
+                    let foodMatch = card.normalised_foodmatch || null;
+                    let normalizedMatch = '';
+                    let notes = translation.slice(0, 80);
+                    let notesMore = '';
+                    if (translation.length > 0) {
+                        notesMore = 'Read More'
+                    }
+                    if (card.wine_subtype_name.length > 0) {
+                        card.wine_subtype_name = ', ' + card.wine_subtype_name;
+                    }
+                    if (foodMatch) {
+                        normalizedMatch = foodMatch.toString().slice(0, 3);
+                    } else {
+                        normalizedMatch = 'null';
+                    }
+                    let score = _score.toString().slice(0, 3);
+                    let bottleSize = '';
+                    if (card.price_koeff >= 0.375 && card.price_koeff <= 0.5) {
+                        bottleSize = '1_2 bottle';
+                    } else if (card.price_koeff > 0.5 && card.price_koeff <= 1.0) {
+                        bottleSize = 'bottle';
+                    } else if (card.price_koeff > 1.0) {
+                        bottleSize = 'big bottle';
+                    }
+                    let colorIMG = 'https://www.wine-manager.com/red/img/' + card.wine_type_name + '/' + bottleSize + '.png';
+                    let ratingColor = '';
+                    let scoreColor = '';
+                    let matchColor = '';
+                    if (card.overall_rating > 60 && card.overall_rating <= 65) {
+                        ratingColor = '#ca2d26';
+                    } else if (card.overall_rating > 65 && card.overall_rating <= 70) {
+                        ratingColor = '#de5a25';
+                    } else if (card.overall_rating > 70 && card.overall_rating <= 75) {
+                        ratingColor = '#f47220';
+                    } else if (card.overall_rating > 75 && card.overall_rating <= 80) {
+                        ratingColor = '#f8b316';
+                    } else if (card.overall_rating > 80 && card.overall_rating <= 85) {
+                        ratingColor = '#d4da22';
+                    } else if (card.overall_rating > 85 && card.overall_rating <= 90) {
+                        ratingColor = '#abd036';
+                    } else if (card.overall_rating > 90 && card.overall_rating <= 95) {
+                        ratingColor = '#75c042';
+                    } else if (card.overall_rating > 95) {
+                        ratingColor = '#3ab764';
+                    }
+                    if (normalizedMatch > 2 && normalizedMatch <= 3) {
+                        matchColor = '#ca2d26';
+                    } else if (normalizedMatch > 3 && normalizedMatch <= 4) {
+                        matchColor = '#de5a25';
+                    } else if (normalizedMatch > 4 && normalizedMatch <= 5) {
+                        matchColor = '#f47220';
+                    } else if (normalizedMatch > 5 && normalizedMatch <= 6) {
+                        matchColor = '#f8b316';
+                    } else if (normalizedMatch > 6 && normalizedMatch <= 7) {
+                        matchColor = '#d4da22';
+                    } else if (normalizedMatch > 7 && normalizedMatch <= 8) {
+                        matchColor = '#abd036';
+                    } else if (normalizedMatch > 8 && normalizedMatch <= 9) {
+                        matchColor = '#75c042';
+                    } else if (normalizedMatch > 9 && normalizedMatch <= 10) {
+                        matchColor = '#3ab764';
+                    }
+                    if (score > 2 && score <= 3) {
+                        scoreColor = '#ca2d26';
+                    } else if (score > 3 && score <= 4) {
+                        scoreColor = '#de5a25';
+                    } else if (score > 4 && score <= 5) {
+                        scoreColor = '#f47220';
+                    } else if (score > 5 && score <= 6) {
+                        scoreColor = '#f8b316';
+                    } else if (score > 6 && score <= 7) {
+                        scoreColor = '#d4da22';
+                    } else if (score > 7 && score <= 8) {
+                        scoreColor = '#abd036';
+                    } else if (score > 8 && score <= 9) {
+                        scoreColor = '#75c042';
+                    } else if (score > 9 && score <= 10) {
+                        scoreColor = '#3ab764';
+                    }
+                    $(carousel).append(`<div class="wine_card">
                                         <div class="wine_card_header">
                                             <div class="wine_header_name">
                                                 ` + card.wine_name + `` + card.wine_subtype_name + `
@@ -442,6 +451,7 @@ jQuery(document).ready(function ($) {
                                             </p>
                                         </div>
                                     </div>`);
+                });
             });
             let leftButton = document.createElement('div');
             $(leftButton).addClass('carousel_button left_carousel_button');
