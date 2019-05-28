@@ -91,7 +91,7 @@ jQuery(document).ready(function ($) {
             }, 1500);
             let new_id = self.getRandomId(1000, 9999);
             // console.log(`ID: ${new_id}`);
-            self.deleteCookie('user_id');
+            // self.deleteCookie('user_id');
             let cookie = self.getCookie('user_id');
             if (!cookie) {
                 self.setCookie('user_id', new_id);
@@ -481,9 +481,9 @@ jQuery(document).ready(function ($) {
             setTimeout(() => {
                 $('.notes_read_more').on('click', function () {
                     $(this).parent().parent().parent().parent().animate({height: '324px', marginTop: '5px'}, 400);
-                    $('.wine_card').animate({marginTop: '77px', height: '250px'}, 500);
-                    $('.wine_card').find('.wine_description_text.first_text').css('display', 'block');
-                    $('.wine_card').find('.wine_description_text.second_text').css('display', 'none');
+                    $(this).parent().parent().parent().parent().find('.wine_card').animate({marginTop: '77px', height: '250px'}, 500);
+                    $(this).parent().parent().parent().parent().find('.wine_card').find('.wine_description_text.first_text').css('display', 'block');
+                    $(this).parent().parent().parent().parent().find('.wine_card').find('.wine_description_text.second_text').css('display', 'none');
                     $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
                     $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'none');
                     $(this).parent().parent().parent().find('.wine_description_text.second_text').css('display', 'block');
@@ -491,7 +491,7 @@ jQuery(document).ready(function ($) {
                 });
                 $('.notes_read_less').on('click', function () {
                     $(this).parent().parent().parent().parent().animate({height: '250px', marginTop: '5px'}, 400);
-                    $('.wine_card').animate({marginTop: '0', height: '250px'}, 500);
+                    $(this).parent().parent().parent().parent().find('.wine_card').animate({marginTop: '0', height: '250px'}, 500);
                     $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
                     $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'block');
                     $(this).parent().parent().parent().find('.wine_description_text.second_text').css('display', 'none');
@@ -603,9 +603,9 @@ jQuery(document).ready(function ($) {
                                 $('#message_queue').animate({paddingBottom: '45px'}, 700);
                             });
                             if (jsonResponse.data === 'ERR') {
-                                self.postToAPI('API CALL ERROR', true);
+                                self.postToAPI('API CALL ERROR');
                             } else {
-                                self.postToAPI('API CALL SUCCESS', true);
+                                self.postToAPI('API CALL SUCCESS');
                             }
                             break;
                         case 'wines':
@@ -626,9 +626,9 @@ jQuery(document).ready(function ($) {
                             self.wines = 'true';
                             self.pairing = 'false';
                             if (jsonResponse.data === 'ERR') {
-                                self.postToAPI('API CALL ERROR', true);
+                                self.postToAPI('API CALL ERROR');
                             } else {
-                                self.postToAPI('API CALL SUCCESS', true);
+                                self.postToAPI('API CALL SUCCESS');
                             }
                             break;
                         case 'pairing':
@@ -649,9 +649,9 @@ jQuery(document).ready(function ($) {
                             self.pairing = 'true';
                             self.wines = 'false';
                             if (jsonResponse.data === 'ERR') {
-                                self.postToAPI('API CALL ERROR', true);
+                                self.postToAPI('API CALL ERROR');
                             } else {
-                                self.postToAPI('API CALL SUCCESS', true);
+                                self.postToAPI('API CALL SUCCESS');
                             }
                             break;
                         case 'other':
