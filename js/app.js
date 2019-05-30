@@ -42,7 +42,7 @@ jQuery(document).ready(function ($) {
             setTimeout(function () {
                 let id = $('#gaspar_id').text() || self.place;
                 self.place = id;
-                console.log(self.place);
+                // console.log(self.place);
                 let request = new Request('https://chatbot.wine-manager.com/customization?place=' + self.place, myInit);
                 fetch(request).then((response) => {
                     // console.log(response);
@@ -289,7 +289,6 @@ jQuery(document).ready(function ($) {
                 newMessage.addEventListener('click', function () {
                     let regExp = /:\s(\w*)/gi;
                     let buttonLocale = regExp.exec(button.label);
-                    console.log(buttonLocale);
                     if (!buttonLocale) {
                         self.addMessage(button.label, 'user', 'text');
                     } else {
@@ -325,7 +324,6 @@ jQuery(document).ready(function ($) {
                 fetch(request).then(function (response) {
                     return response.json();
                 }).then(function (jsonResponse) {
-                    console.log(jsonResponse);
                     translation = jsonResponse.text;
                     let imageHolder = card.image || 'https://www.wine-manager.com/red/img/wines_in_my_wish_list.jpg';
                     let _score = card.overall_wp_score;
@@ -481,7 +479,10 @@ jQuery(document).ready(function ($) {
             setTimeout(() => {
                 $('.notes_read_more').on('click', function () {
                     $(this).parent().parent().parent().parent().animate({height: '324px', marginTop: '5px'}, 400);
-                    $(this).parent().parent().parent().parent().find('.wine_card').animate({marginTop: '77px', height: '250px'}, 500);
+                    $(this).parent().parent().parent().parent().find('.wine_card').animate({
+                        marginTop: '77px',
+                        height: '250px'
+                    }, 500);
                     $(this).parent().parent().parent().parent().find('.wine_card').find('.wine_description_text.first_text').css('display', 'block');
                     $(this).parent().parent().parent().parent().find('.wine_card').find('.wine_description_text.second_text').css('display', 'none');
                     $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
@@ -491,7 +492,10 @@ jQuery(document).ready(function ($) {
                 });
                 $('.notes_read_less').on('click', function () {
                     $(this).parent().parent().parent().parent().animate({height: '250px', marginTop: '5px'}, 400);
-                    $(this).parent().parent().parent().parent().find('.wine_card').animate({marginTop: '0', height: '250px'}, 500);
+                    $(this).parent().parent().parent().parent().find('.wine_card').animate({
+                        marginTop: '0',
+                        height: '250px'
+                    }, 500);
                     $(this).parent().parent().parent().animate({height: '324px', marginTop: '0'}, 700);
                     $(this).parent().parent().parent().find('.wine_description_text.first_text').css('display', 'block');
                     $(this).parent().parent().parent().find('.wine_description_text.second_text').css('display', 'none');
@@ -542,15 +546,16 @@ jQuery(document).ready(function ($) {
         },
         postToAPI: function (value, exit_case) {
             exit_case = exit_case || false;
+            let self = this;
+            // console.log(`Value: ${value}`);
             let myInit = {
                 method: 'GET'
             };
-            let self = this;
             let request = new Request('https://chatbot.wine-manager.com/watson/' + self.user_id + '/' + self.place + '/?value=' + value + '&lang=' + self.lang + '&wines=' + self.wines + '&pairing=' + self.pairing, myInit);
             fetch(request).then(function (response) {
                 return response.json();
             }).then(function (jsonResponse) {
-                console.log(jsonResponse);
+                // console.log(jsonResponse);
                 if (!exit_case) {
                     switch (jsonResponse.type) {
                         case 'dishes':
@@ -602,11 +607,34 @@ jQuery(document).ready(function ($) {
                                 self.addMessage($(this).text(), 'user', 'text');
                                 $('#message_queue').animate({paddingBottom: '45px'}, 700);
                             });
-                            if (jsonResponse.data === 'ERR') {
-                                self.postToAPI('API CALL ERROR');
-                            } else {
-                                self.postToAPI('API CALL SUCCESS');
+                            if (jsonResponse.data) {
+                                let apiValue = 'API CALL SUCCESS';
+                                if (jsonResponse.data === 'ERR') {
+                                    apiValue = 'API CALL ERROR';
+                                } else {
+                                    apiValue = 'API CALL SUCCESS';
+                                }
+                                let myInit = {
+                                    method: 'GET'
+                                };
+                                let request = new Request('https://chatbot.wine-manager.com/watson/' + self.user_id + '/' + self.place + '/?value=' + apiValue + '&lang=' + self.lang + '&wines=' + self.wines + '&pairing=' + self.pairing, myInit);
+                                fetch(request).then(function (response) {
+                                    return response.json();
+                                }).then(function (jsonResponse) {
+                                    // self.messageQueue.push({value: jsonResponse, sender: 'gaspar', type: 'text'});
+                                    jsonResponse.text.forEach(function (step) {
+                                        if (step.response_type === 'text') {
+                                            self.messageQueue.push({value: step.text, sender: 'gaspar', type: 'text'});
+                                        } else if (step.response_type === 'option') {
+                                            self.messageQueue.push({value: step.title, sender: 'gaspar', type: 'text'});
+                                            step.options.forEach(function (option) {
+                                                self.messageQueue.push({value: option, sender: 'gaspar', type: 'button'});
+                                            });
+                                        }
+                                    });
+                                });
                             }
+                            // self.postToAPI('API CALL SUCCESS');
                             break;
                         case 'wines':
                             jsonResponse.text.forEach(function (step) {
@@ -625,11 +653,33 @@ jQuery(document).ready(function ($) {
                             // self.postToAPI('Exit', true);
                             self.wines = 'true';
                             self.pairing = 'false';
-                            if (jsonResponse.data === 'ERR') {
-                                self.postToAPI('API CALL ERROR');
-                            } else {
-                                self.postToAPI('API CALL SUCCESS');
+                            if (jsonResponse.data) {
+                                let apiValue = 'API CALL SUCCESS';
+                                if (jsonResponse.data === 'ERR') {
+                                    apiValue = 'API CALL ERROR';
+                                } else {
+                                    apiValue = 'API CALL SUCCESS';
+                                }
+                                let myInit = {
+                                    method: 'GET'
+                                };
+                                let request = new Request('https://chatbot.wine-manager.com/watson/' + self.user_id + '/' + self.place + '/?value=' + apiValue + '&lang=' + self.lang + '&wines=' + self.wines + '&pairing=' + self.pairing, myInit);
+                                fetch(request).then(function (response) {
+                                    return response.json();
+                                }).then(function (jsonResponse) {
+                                    jsonResponse.text.forEach(function (step) {
+                                        if (step.response_type === 'text') {
+                                            self.messageQueue.push({value: step.text, sender: 'gaspar', type: 'text'});
+                                        } else if (step.response_type === 'option') {
+                                            self.messageQueue.push({value: step.title, sender: 'gaspar', type: 'text'});
+                                            step.options.forEach(function (option) {
+                                                self.messageQueue.push({value: option, sender: 'gaspar', type: 'button'});
+                                            });
+                                        }
+                                    });
+                                });
                             }
+                            // self.postToAPI('API CALL SUCCESS');
                             break;
                         case 'pairing':
                             jsonResponse.text.forEach(function (step) {
@@ -648,11 +698,34 @@ jQuery(document).ready(function ($) {
                             self.flushQueue(self.messageQueue);
                             self.pairing = 'true';
                             self.wines = 'false';
-                            if (jsonResponse.data === 'ERR') {
-                                self.postToAPI('API CALL ERROR');
-                            } else {
-                                self.postToAPI('API CALL SUCCESS');
+                            if (jsonResponse.data) {
+                                let apiValue = 'API CALL SUCCESS';
+                                if (jsonResponse.data === 'ERR') {
+                                    apiValue = 'API CALL ERROR';
+                                } else {
+                                    apiValue = 'API CALL SUCCESS';
+                                }
+                                let myInit = {
+                                    method: 'GET'
+                                };
+                                let request = new Request('https://chatbot.wine-manager.com/watson/' + self.user_id + '/' + self.place + '/?value=' + apiValue + '&lang=' + self.lang + '&wines=' + self.wines + '&pairing=' + self.pairing, myInit);
+                                fetch(request).then(function (response) {
+                                    return response.json();
+                                }).then(function (jsonResponse) {
+                                    // self.messageQueue.push({value: jsonResponse, sender: 'gaspar', type: 'text'});
+                                    jsonResponse.text.forEach(function (step) {
+                                        if (step.response_type === 'text') {
+                                            self.messageQueue.push({value: step.text, sender: 'gaspar', type: 'text'});
+                                        } else if (step.response_type === 'option') {
+                                            self.messageQueue.push({value: step.title, sender: 'gaspar', type: 'text'});
+                                            step.options.forEach(function (option) {
+                                                self.messageQueue.push({value: option, sender: 'gaspar', type: 'button'});
+                                            });
+                                        }
+                                    });
+                                });
                             }
+                            // self.postToAPI('API CALL SUCCESS', false);
                             break;
                         case 'other':
                             jsonResponse.response.forEach(function (step, index) {
