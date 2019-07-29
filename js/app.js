@@ -90,15 +90,12 @@ jQuery(document).ready(function ($) {
                 });
             }, 1500);
             let new_id = self.getRandomId(1000, 9999);
-            // console.log(`ID: ${new_id}`);
-            // self.deleteCookie('user_id');
             let cookie = self.getCookie('user_id');
             if (!cookie) {
                 self.setCookie('user_id', new_id);
                 cookie = self.getCookie('user_id');
             }
             self.user_id = cookie;
-            // console.log(`Cookie: ${self.user_id}`);
         },
         getRandomId: function (min, max) {
             return Math.floor(Math.random() * (max - min)) + min;
@@ -138,38 +135,9 @@ jQuery(document).ready(function ($) {
                 self.postToAPI(' ');
             }
         },
-        clickButton: function () {
-            let self = this;
-            if (!self.opened) {
-                $('#gaspar_preview_container').hide('drop', {direction: 'down'}, 600);
-                clearTimeout(self.previewTimer);
-                $('#gaspar_button').hide('scale', {percent: 0, direction: 'horizontal'}, 600, function () {
-                    $('.open_gaspar').css('display', 'none');
-                    $('#close_gaspar').css('display', 'block');
-                    $('#gaspar_button').show('scale', {percent: 0, direction: 'horizontal'}, 600);
-                });
-                $('#gaspar_body').toggle('drop', {direction: 'down'}, 1000, function () {
-                    $('#gaspar_body').css('display', 'flex');
-                });
-                self.opened = true;
-            } else {
-                $('#gaspar_body').toggle('drop', {direction: 'down'}, 1000);
-                $('#gaspar_button').hide('scale', {percent: 0, direction: 'horizontal'}, 600, function () {
-                    $('.open_gaspar').css('display', 'block');
-                    $('#close_gaspar').css('display', 'none');
-                    $('#gaspar_button').show('scale', {percent: 0, direction: 'horizontal'}, 600);
-                });
-                self.opened = false;
-                self.previewTimer = setTimeout(function () {
-                    $('#gaspar_preview_container').show('drop', {direction: 'down'}, 600);
-                }, 10000);
-                clearTimeout(self.previewTimer);
-            }
-        },
         inputSended: function (text) {
             let inputText = text || $(containers.INPUT).text();
             $('.filter').hide('drop', {direction: 'right'}, 700);
-            // $('#message_queue').animate({paddingBottom: '8px'}, 600);
             let self = this;
             self.addMessage(inputText, 'user', 'text');
             $(containers.INPUT).empty();
@@ -251,7 +219,6 @@ jQuery(document).ready(function ($) {
                 }
             }
             self.previous_sender = sender;
-            // $('#message_queue').animate({paddingBottom: '8px'}, 400);
         },
         addButtons: function (button, options, sender) {
             let self = this;
@@ -267,7 +234,6 @@ jQuery(document).ready(function ($) {
                 }).then(function (jsonResponse) {
                     button.label = jsonResponse.text;
                     $(newMessage).append(button.label);
-                    // $(newMessage).css('display', 'none');
                     newMessage.addEventListener('click', function () {
                         let regExp = /:\s(\w*)/gi;
                         let buttonLocale = regExp.exec(button.label);
@@ -281,11 +247,9 @@ jQuery(document).ready(function ($) {
                     $(newMessage).appendTo(containers.QUEUE);
                     self.messageQueue.length === 0 ?
                         self.scrollQuery(400) : null;
-                    // $(newMessage).show('drop', options, 300);
                 });
             } else if (self.lang === 'en') {
                 $(newMessage).append(button.label);
-                // $(newMessage).css('display', 'none');
                 newMessage.addEventListener('click', function () {
                     let regExp = /:\s(\w*)/gi;
                     let buttonLocale = regExp.exec(button.label);
@@ -293,12 +257,10 @@ jQuery(document).ready(function ($) {
                         self.addMessage(button.label, 'user', 'text');
                     } else {
                         self.lang = buttonLocale[1];
-                        // self.addText(button.label, 'user', {direction: 'left'});
                         self.postToAPI('Hello');
                     }
                 });
                 $(newMessage).appendTo(containers.QUEUE);
-                // $(newMessage).show('drop', options, 300);
             }
             if (sender === self.previous_sender) {
                 setTimeout(() => {
@@ -309,7 +271,6 @@ jQuery(document).ready(function ($) {
                 $(newMessage).css('margin-top', '5px');
             }
             self.previous_sender = sender;
-            // $('#message_queue').animate({paddingBottom: '8px'}, 400);
         },
         addCarousel: function (cards) {
             let self = this;
@@ -547,7 +508,6 @@ jQuery(document).ready(function ($) {
         postToAPI: function (value, exit_case) {
             exit_case = exit_case || false;
             let self = this;
-            // console.log(`Value: ${value}`);
             let myInit = {
                 method: 'GET'
             };
@@ -634,7 +594,6 @@ jQuery(document).ready(function ($) {
                                     });
                                 });
                             }
-                            // self.postToAPI('API CALL SUCCESS');
                             break;
                         case 'wines':
                             jsonResponse.text.forEach(function (step) {
@@ -650,7 +609,6 @@ jQuery(document).ready(function ($) {
                             self.messageQueue.push({value: jsonResponse.message, sender: 'gaspar', type: 'text'});
                             self.messageQueue.push({value: jsonResponse.data, sender: 'gaspar', type: 'carousel'});
                             self.flushQueue(self.messageQueue);
-                            // self.postToAPI('Exit', true);
                             self.wines = 'true';
                             self.pairing = 'false';
                             if (jsonResponse.data) {
@@ -679,7 +637,6 @@ jQuery(document).ready(function ($) {
                                     });
                                 });
                             }
-                            // self.postToAPI('API CALL SUCCESS');
                             break;
                         case 'pairing':
                             jsonResponse.text.forEach(function (step) {
@@ -725,7 +682,6 @@ jQuery(document).ready(function ($) {
                                     });
                                 });
                             }
-                            // self.postToAPI('API CALL SUCCESS', false);
                             break;
                         case 'other':
                             jsonResponse.response.forEach(function (step, index) {
@@ -757,12 +713,10 @@ jQuery(document).ready(function ($) {
             if (currentQueue.length > 0) {
                 let currentElement = currentQueue.shift();
                 setTimeout(() => {
-                    // $('#message_queue').animate({paddingBottom: '60px'},200);
                     self.scrollQuery(400);
                     $('#waves_message').show('drop', {'direction': 'left'}, 800);
                     setTimeout(() => {
                         $('#waves_message').hide('drop', {'direction': 'left'}, 200);
-                        // $('#message_queue').animate({paddingBottom: '8px'},300);
                         self.addMessage(currentElement.value, currentElement.sender, currentElement.type);
                         self.flushQueue(currentQueue);
                     }, self.type_timer);
